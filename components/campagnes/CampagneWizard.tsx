@@ -9,6 +9,21 @@ import { ScreeningVragenEditor } from "./ScreeningVragen";
 
 type KRow = { id: string; naam: string; telefoon: string };
 
+/** Leest fouttekst uit API-response; faalt niet op lege of niet-JSON body. */
+async function parseApiError(res: Response): Promise<string> {
+  const text = await res.text();
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return `Start mislukt (HTTP ${res.status})`;
+  }
+  try {
+    const j = JSON.parse(trimmed) as { error?: string };
+    return j.error ?? trimmed.slice(0, 300);
+  } catch {
+    return trimmed.slice(0, 300) || `Start mislukt (HTTP ${res.status})`;
+  }
+}
+
 export function CampagneWizard({
   bureauId,
   vacatures,
@@ -91,8 +106,8 @@ export function CampagneWizard({
         method: "POST",
       });
       if (!res.ok) {
-        const j = await res.json();
-        setError(j.error ?? "Start mislukt");
+        const errMsg = await parseApiError(res);
+        setError(errMsg);
         setLoading(false);
         return;
       }
