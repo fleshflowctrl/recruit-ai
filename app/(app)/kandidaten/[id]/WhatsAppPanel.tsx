@@ -5,10 +5,8 @@ import toast from "react-hot-toast";
 
 export function WhatsAppPanel({
   kandidaatId,
-  bureauId,
 }: {
   kandidaatId: string;
-  bureauId: string;
 }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,9 +20,8 @@ export function WhatsAppPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kandidaatId,
-          bureauId,
           message: text,
-          type: "vrij",
+          type: "custom",
         }),
       });
       const j = (await res.json()) as { error?: string };

@@ -8,7 +8,12 @@ import { DataTable, Th, Td } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ScoreBadge } from "@/components/ui/ScoreBadge";
 import { GesprekRapportModal } from "@/components/campagnes/GesprekRapport";
-import type { Gesprek, Kandidaat, CampagneKandidaat } from "@/lib/types";
+import type {
+  Gesprek,
+  Kandidaat,
+  CampagneKandidaat,
+  PlaatsingPrefill,
+} from "@/lib/types";
 
 export type CampagneKandidaatRow = {
   campagneKandidaat: CampagneKandidaat;
@@ -19,9 +24,11 @@ export type CampagneKandidaatRow = {
 export function CampagneKandidatenTable({
   campagneId,
   rows,
+  plaatsingPrefill,
 }: {
   campagneId: string;
   rows: CampagneKandidaatRow[];
+  plaatsingPrefill: PlaatsingPrefill | null;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -74,12 +81,22 @@ export function CampagneKandidatenTable({
                   <Td>{g?.duur_seconden ? `${g.duur_seconden}s` : "—"}</Td>
                   <Td>{row.campagneKandidaat.bel_pogingen}</Td>
                   <Td onClick={(e) => e.stopPropagation()}>
-                    <Link
-                      href={`/kandidaten/${k.id}`}
-                      className="text-primary hover:underline"
-                    >
-                      Profiel
-                    </Link>
+                    <div className="flex flex-wrap gap-2">
+                      {row.campagneKandidaat.status === "geschikt" && (
+                        <Link
+                          href={`/berichten?kandidaat=${k.id}`}
+                          className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-900 hover:bg-emerald-100"
+                        >
+                          WhatsApp sturen
+                        </Link>
+                      )}
+                      <Link
+                        href={`/kandidaten/${k.id}`}
+                        className="text-primary hover:underline"
+                      >
+                        Profiel
+                      </Link>
+                    </div>
                   </Td>
                 </tr>
               );
@@ -98,6 +115,7 @@ export function CampagneKandidatenTable({
         gesprek={selected?.gesprek ?? null}
         campagneId={campagneId}
         campagneKandidaatId={selected?.campagneKandidaat.id ?? ""}
+        plaatsingPrefill={plaatsingPrefill}
         onUpdated={() => router.refresh()}
       />
     </>

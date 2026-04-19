@@ -1,6 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendWhatsApp } from "@/lib/whatsapp";
+import { buildBeschikbaarheidCheck, sendWhatsApp } from "@/lib/whatsapp";
 
 export const beschikbaarheidCheck = inngest.createFunction(
   {
@@ -25,7 +25,7 @@ export const beschikbaarheidCheck = inngest.createFunction(
           .eq("status", "actief");
 
         for (const k of kandidaten ?? []) {
-          const msg = `Goedemorgen ${k.naam}! Bent u beschikbaar deze week? Antwoord met JA of NEE.`;
+          const msg = buildBeschikbaarheidCheck(k.naam);
           try {
             await sendWhatsApp({
               to: k.telefoon,

@@ -215,7 +215,7 @@ export default async function KandidaatDetailPage({
                 campagneId={latestCampagneId}
               />
               <Link
-                href={`/kandidaten/${k.id}?whatsapp=1`}
+                href={`/berichten?kandidaat=${k.id}`}
                 className="block w-full rounded-xl border border-border py-2 text-center text-sm font-medium hover:bg-slate-50"
               >
                 WhatsApp sturen
@@ -275,7 +275,7 @@ export default async function KandidaatDetailPage({
             </Link>
           </div>
 
-          <WhatsAppPanel kandidaatId={k.id} bureauId={ctx.bureau.id} />
+          <WhatsAppPanel kandidaatId={k.id} />
         </div>
       </div>
     </PageWrapper>

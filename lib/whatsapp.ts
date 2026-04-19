@@ -1,5 +1,3 @@
-import { createAdminClient } from "@/lib/supabase/admin";
-
 export type PlaatsingBevestigingParams = {
   kandidaatNaam: string;
   functie: string;
@@ -12,9 +10,29 @@ export type PlaatsingBevestigingParams = {
   meeNemen?: string;
 };
 
+async function logOutboundBericht(params: {
+  bureauId: string;
+  kandidaatId?: string;
+  message: string;
+  status: "verzonden" | "mislukt";
+  telnyxId: string | null;
+}) {
+  const { createAdminClient } = await import("./supabase/admin");
+  const admin = createAdminClient();
+  await admin.from("berichten").insert({
+    bureau_id: params.bureauId,
+    kandidaat_id: params.kandidaatId ?? null,
+    kanaal: "whatsapp",
+    richting: "outbound",
+    inhoud: params.message,
+    status: params.status,
+    telnyx_message_id: params.telnyxId,
+    gelezen: true,
+  });
+}
+
 /**
- * Telnyx Messaging (WhatsApp) — server-side only.
- * Zet TELNYX_MOCK=true om geen echte API-call te doen; bericht wordt wel gelogd.
+ * Telnyx WhatsApp/SMS via Messaging API. Zonder volledige config: mock (log in berichten, geen crash).
  */
 export async function sendWhatsApp(params: {
   to: string;
@@ -26,77 +44,77 @@ export async function sendWhatsApp(params: {
   const from = process.env.TELNYX_PHONE_NUMBER;
   const messagingProfileId = process.env.TELNYX_MESSAGING_PROFILE_ID;
 
-  const mock = process.env.TELNYX_MOCK === "true";
+  const canSendReal =
+    Boolean(apiKey && from && messagingProfileId) &&
+    process.env.TELNYX_MOCK !== "true";
 
-  if (!mock && (!apiKey || !from || !messagingProfileId)) {
-    throw new Error("WhatsApp niet geconfigureerd");
-  }
-
-  let responseOk = mock;
-  let data: { data?: { id?: string } } = {};
-
-  if (!mock) {
-    const response = await fetch("https://api.telnyx.com/v2/messages", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: params.to,
-        text: params.message,
-        messaging_profile_id: messagingProfileId,
-        type: "SMS",
-      }),
+  if (!apiKey || !from) {
+    console.warn(
+      "[WhatsApp] TELNYX_API_KEY of TELNYX_PHONE_NUMBER ontbreekt — mock modus",
+    );
+    await logOutboundBericht({
+      bureauId: params.bureauId,
+      kandidaatId: params.kandidaatId,
+      message: params.message,
+      status: "verzonden",
+      telnyxId: `mock_${Date.now()}`,
     });
-    data = (await response.json()) as { data?: { id?: string } };
-    responseOk = response.ok;
-    if (!response.ok) {
-      const admin = createAdminClient();
-      await admin.from("berichten").insert({
-        bureau_id: params.bureauId,
-        kandidaat_id: params.kandidaatId ?? null,
-        kanaal: "whatsapp",
-        richting: "outbound",
-        inhoud: params.message,
-        status: "mislukt",
-        telnyx_message_id: data?.data?.id ?? null,
-        gelezen: true,
-      });
-      throw new Error("WhatsApp-verzending mislukt");
-    }
+    return;
   }
 
-  const admin = createAdminClient();
-  await admin.from("berichten").insert({
-    bureau_id: params.bureauId,
-    kandidaat_id: params.kandidaatId ?? null,
-    kanaal: "whatsapp",
-    richting: "outbound",
-    inhoud: params.message,
-    status: responseOk ? "verzonden" : "mislukt",
-    telnyx_message_id: mock ? `mock_${Date.now()}` : (data?.data?.id ?? null),
-    gelezen: true,
-  });
-}
+  if (!messagingProfileId) {
+    console.warn(
+      "[WhatsApp] TELNYX_MESSAGING_PROFILE_ID ontbreekt — mock verzending, bericht wel gelogd",
+    );
+    await logOutboundBericht({
+      bureauId: params.bureauId,
+      kandidaatId: params.kandidaatId,
+      message: params.message,
+      status: "verzonden",
+      telnyxId: `mock_${Date.now()}`,
+    });
+    return;
+  }
 
-/** @deprecated Gebruik sendWhatsApp */
-export async function sendWhatsAppMessage(opts: {
-  to: string;
-  from: string;
-  text: string;
-  messagingProfileId?: string;
-  bureauId: string;
-  kandidaatId?: string;
-}): Promise<{ messageId: string | null }> {
-  await sendWhatsApp({
-    to: opts.to,
-    message: opts.text,
-    bureauId: opts.bureauId,
-    kandidaatId: opts.kandidaatId,
+  if (!canSendReal) {
+    await logOutboundBericht({
+      bureauId: params.bureauId,
+      kandidaatId: params.kandidaatId,
+      message: params.message,
+      status: "verzonden",
+      telnyxId: `mock_${Date.now()}`,
+    });
+    return;
+  }
+
+  const response = await fetch("https://api.telnyx.com/v2/messages", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: params.to,
+      text: params.message,
+      messaging_profile_id: messagingProfileId,
+      type: "SMS",
+    }),
   });
-  return { messageId: null };
+
+  const data = (await response.json()) as { data?: { id?: string } };
+
+  await logOutboundBericht({
+    bureauId: params.bureauId,
+    kandidaatId: params.kandidaatId,
+    message: params.message,
+    status: response.ok ? "verzonden" : "mislukt",
+    telnyxId: data?.data?.id ?? null,
+  });
+
+  if (!response.ok) {
+    throw new Error("WhatsApp-verzending mislukt");
+  }
 }
 
 export function buildPlaatsingsBevestiging(
@@ -117,4 +135,55 @@ Bevestigt u uw komst door JA te sturen?
 
 Succes gewenst! 🤝
 _RecruitAI_`;
+}
+
+export function buildBeschikbaarheidCheck(kandidaatNaam: string): string {
+  return `Goedemorgen ${kandidaatNaam}! 👋
+
+Dit is een automatisch bericht van uw uitzendbureau.
+
+Bent u beschikbaar deze week voor een opdracht?
+
+Antwoord met:
+✅ *JA* — ik ben beschikbaar
+❌ *NEE* — ik ben niet beschikbaar
+
+_RecruitAI_`;
+}
+
+export function buildNoShowReminder(params: {
+  kandidaatNaam: string;
+  functie: string;
+  bedrijfNaam: string;
+  tijd: string;
+  adres: string;
+}): string {
+  return `Goedemiddag ${params.kandidaatNaam}! ⏰
+
+Herinnering: morgen begint uw opdracht als *${params.functie}* bij *${params.bedrijfNaam}*.
+
+⏰ *Tijd:* ${params.tijd}
+📍 *Adres:* ${params.adres}
+
+Bevestigt u uw komst met *JA*?
+
+_RecruitAI_`;
+}
+
+/** @deprecated Gebruik sendWhatsApp */
+export async function sendWhatsAppMessage(opts: {
+  to: string;
+  from: string;
+  text: string;
+  messagingProfileId?: string;
+  bureauId: string;
+  kandidaatId?: string;
+}): Promise<{ messageId: string | null }> {
+  await sendWhatsApp({
+    to: opts.to,
+    message: opts.text,
+    bureauId: opts.bureauId,
+    kandidaatId: opts.kandidaatId,
+  });
+  return { messageId: null };
 }

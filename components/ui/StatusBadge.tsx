@@ -16,6 +16,10 @@ const MAP: Record<string, { label: string; className: string }> = {
   gestopt: { label: "Gestopt", className: "bg-red-50 text-danger ring-red-200" },
   inactief: { label: "Inactief", className: "bg-slate-100 text-muted ring-slate-200" },
   geplaatst: { label: "Geplaatst", className: "bg-green-50 text-success ring-green-200" },
+  niet_beschikbaar: {
+    label: "Niet beschikbaar",
+    className: "bg-amber-50 text-amber-900 ring-amber-200",
+  },
   open: { label: "Open", className: "bg-blue-50 text-primary ring-blue-200" },
   bezig: { label: "Bezig", className: "bg-amber-50 text-warning ring-amber-200" },
   voltooid: { label: "Voltooid", className: "bg-green-50 text-success ring-green-200" },

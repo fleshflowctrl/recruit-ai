@@ -8,8 +8,14 @@ import { ExportGeschiktenButton } from "./ExportGeschiktenButton";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { CampagneRefresh } from "./CampagneRefresh";
-import type { Gesprek, Kandidaat, CampagneKandidaat } from "@/lib/types";
+import type {
+  Gesprek,
+  Kandidaat,
+  CampagneKandidaat,
+  PlaatsingPrefill,
+} from "@/lib/types";
 import { CampagneKandidatenTable } from "@/components/campagnes/CampagneKandidatenTable";
+import { format } from "date-fns";
 
 export default async function CampagneDetailPage({
   params,
@@ -79,6 +85,39 @@ export default async function CampagneDetailPage({
   const gebeld = c.gebeld ?? 0;
   const pct = totaal > 0 ? Math.round((gebeld / totaal) * 100) : 0;
 
+  let plaatsingPrefill: PlaatsingPrefill | null = null;
+  if (c.vacature_id) {
+    const { data: vacature } = await supabase
+      .from("vacatures")
+      .select("*")
+      .eq("id", c.vacature_id)
+      .eq("bureau_id", ctx.bureau.id)
+      .single();
+    if (vacature?.opdrachtgever_id) {
+      const { data: og } = await supabase
+        .from("opdrachtgevers")
+        .select("*")
+        .eq("id", vacature.opdrachtgever_id)
+        .eq("bureau_id", ctx.bureau.id)
+        .single();
+      if (vacature && og) {
+        plaatsingPrefill = {
+          vacatureId: vacature.id,
+          opdrachtgeverId: og.id,
+          einddatum: vacature.einddatum,
+          startdatumDefault:
+            vacature.startdatum ??
+            format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
+          adres: og.adres ?? vacature.locatie ?? "",
+          contactpersoon: og.contactpersoon ?? "",
+          contactTelefoon: og.telefoon ?? "",
+          functieTitel: vacature.titel,
+          bedrijfNaam: og.naam,
+        };
+      }
+    }
+  }
+
   return (
     <PageWrapper>
       <CampagneRefresh />
@@ -121,7 +160,11 @@ export default async function CampagneDetailPage({
         <strong>Geen gehoor:</strong> {c.geen_gehoor ?? 0}
       </div>
 
-      <CampagneKandidatenTable campagneId={c.id} rows={tableRows} />
+      <CampagneKandidatenTable
+        campagneId={c.id}
+        rows={tableRows}
+        plaatsingPrefill={plaatsingPrefill}
+      />
     </PageWrapper>
   );
 }

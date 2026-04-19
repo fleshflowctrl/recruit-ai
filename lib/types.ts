@@ -1,6 +1,10 @@
 export type PlanType = "trial" | "starter" | "professional" | "enterprise";
 
-export type KandidaatStatus = "actief" | "inactief" | "geplaatst";
+export type KandidaatStatus =
+  | "actief"
+  | "inactief"
+  | "geplaatst"
+  | "niet_beschikbaar";
 export type VacatureStatus = "open" | "gesloten" | "geannuleerd";
 export type CampagneStatus = "concept" | "actief" | "gepauzeerd" | "afgerond" | "gestopt";
 export type CampagneKandidaatStatus =
@@ -140,6 +144,19 @@ export interface Gesprek {
   bel_poging: number;
   aangemaakt_op: string;
 }
+
+/** Prefill voor plaatsing uit campagne (vacature + opdrachtgever). */
+export type PlaatsingPrefill = {
+  vacatureId: string;
+  opdrachtgeverId: string;
+  startdatumDefault: string;
+  einddatum: string | null;
+  adres: string;
+  contactpersoon: string;
+  contactTelefoon: string;
+  functieTitel: string;
+  bedrijfNaam: string;
+};
 
 export interface Plaatsing {
   id: string;

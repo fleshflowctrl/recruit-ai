@@ -1,5 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
-import { buildPlaatsingsBevestiging, sendWhatsApp } from "@/lib/whatsapp";
+import {
+  buildBeschikbaarheidCheck,
+  buildPlaatsingsBevestiging,
+  sendWhatsApp,
+} from "@/lib/whatsapp";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -18,23 +22,27 @@ const plaatsingSchema = z.object({
 const schema = z
   .object({
     kandidaatId: z.string().uuid(),
-    bureauId: z.string().uuid(),
     message: z.string().min(1).max(4000).optional(),
-    type: z.enum(["vrij", "plaatsing_bevestiging"]).optional(),
+    type: z
+      .enum(["custom", "plaatsing_bevestiging", "beschikbaarheid"])
+      .optional(),
     plaatsing: plaatsingSchema.optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.type === "plaatsing_bevestiging") {
+    const t = data.type ?? "custom";
+    if (t === "plaatsing_bevestiging") {
       if (!data.plaatsing) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "plaatsing verplicht bij type plaatsing_bevestiging",
         });
       }
+    } else if (t === "beschikbaarheid") {
+      /* bericht wordt gegenereerd */
     } else if (!data.message?.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "message verplicht",
+        message: "message verplicht bij type custom",
       });
     }
   });
@@ -65,8 +73,8 @@ export async function POST(request: Request) {
     .select("bureau_id")
     .eq("id", user.id)
     .single();
-  if (!profile || profile.bureau_id !== parsed.data.bureauId) {
-    return NextResponse.json({ error: "Geen toegang tot dit bureau" }, { status: 403 });
+  if (!profile?.bureau_id) {
+    return NextResponse.json({ error: "Geen profiel" }, { status: 403 });
   }
 
   const { data: kandidaat } = await supabase
@@ -80,12 +88,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Kandidaat niet gevonden" }, { status: 404 });
   }
 
+  const msgType = parsed.data.type ?? "custom";
   let text: string;
-  if (parsed.data.type === "plaatsing_bevestiging" && parsed.data.plaatsing) {
+  if (msgType === "plaatsing_bevestiging" && parsed.data.plaatsing) {
     text = buildPlaatsingsBevestiging({
       ...parsed.data.plaatsing,
       kandidaatNaam: parsed.data.plaatsing.kandidaatNaam || kandidaat.naam,
     });
+  } else if (msgType === "beschikbaarheid") {
+    text = buildBeschikbaarheidCheck(kandidaat.naam);
   } else {
     text = parsed.data.message ?? "";
   }

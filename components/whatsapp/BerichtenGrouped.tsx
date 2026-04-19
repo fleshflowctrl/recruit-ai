@@ -31,6 +31,15 @@ export function BerichtenGrouped({
     initialKandidaatId ?? null,
   );
   const [draft, setDraft] = useState("");
+  const [verzenden, setVerzenden] = useState(false);
+
+  const totalOngelezen = useMemo(
+    () =>
+      lines.filter(
+        (b) => b.richting === "inbound" && b.gelezen === false,
+      ).length,
+    [lines],
+  );
 
   const grouped = useMemo(() => {
     const m = new Map<
@@ -115,7 +124,8 @@ export function BerichtenGrouped({
   }, [selectedId, bureauId]);
 
   async function verstuur() {
-    if (!selectedId || !draft.trim()) return;
+    if (!selectedId || !draft.trim() || verzenden) return;
+    setVerzenden(true);
     const t = toast.loading("Verzenden…");
     try {
       const res = await fetch("/api/whatsapp/send", {
@@ -123,9 +133,8 @@ export function BerichtenGrouped({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kandidaatId: selectedId,
-          bureauId,
           message: draft,
-          type: "vrij",
+          type: "custom",
         }),
       });
       const j = (await res.json()) as { error?: string };
@@ -134,6 +143,8 @@ export function BerichtenGrouped({
       toast.success("WhatsApp verzonden ✅", { id: t });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Fout", { id: t });
+    } finally {
+      setVerzenden(false);
     }
   }
 
@@ -147,12 +158,23 @@ export function BerichtenGrouped({
   return (
     <div className="grid gap-6 lg:grid-cols-5">
       <div className="rounded-2xl border border-border bg-white p-4 shadow-sm lg:col-span-2">
-        <h2 className="font-serif text-lg">Gesprekken</h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-serif text-lg">Gesprekken</h2>
+          {totalOngelezen > 0 && (
+            <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-white">
+              {totalOngelezen} ongelezen
+            </span>
+          )}
+        </div>
         <ul className="mt-3 max-h-[560px] space-y-2 overflow-y-auto">
           {list.length === 0 && (
             <li className="text-sm text-muted">Geen conversaties.</li>
           )}
-          {list.map(([kid, g]) => (
+          {list.map(([kid, g]) => {
+            const ongelezenInThread = g.items.filter(
+              (b) => b.richting === "inbound" && b.gelezen === false,
+            ).length;
+            return (
             <li key={kid}>
               <button
                 type="button"
@@ -169,15 +191,16 @@ export function BerichtenGrouped({
                 </span>
                 <span className="mt-1 flex items-center gap-2 text-[10px] text-muted">
                   {format(new Date(g.lastAt), "PPp", { locale: nl })}
-                  {g.unread && (
+                  {ongelezenInThread > 0 && (
                     <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
-                      Nieuw
+                      {ongelezenInThread}
                     </span>
                   )}
                 </span>
               </button>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
 
@@ -210,10 +233,10 @@ export function BerichtenGrouped({
               <button
                 type="button"
                 onClick={verstuur}
-                disabled={!draft.trim()}
+                disabled={!draft.trim() || verzenden}
                 className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
               >
-                Stuur bericht
+                {verzenden ? "Verzenden…" : "Stuur bericht"}
               </button>
             </div>
           </>

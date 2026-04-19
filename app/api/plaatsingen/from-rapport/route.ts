@@ -1,26 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
-import { buildPlaatsingsBevestiging, sendWhatsApp } from "@/lib/whatsapp";
-import { inngest } from "@/inngest/client";
+import { createPlaatsingWithSideEffects } from "@/lib/plaatsingen/service";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { format } from "date-fns";
-import { nl } from "date-fns/locale";
 
 const schema = z.object({
   gesprekId: z.string().uuid(),
   campagneId: z.string().uuid(),
 });
-
-function reminderDayBeforeAt17(startdatum: string | null): string | null {
-  if (!startdatum) return null;
-  const [y, m, d] = startdatum.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  const start = new Date(y, m - 1, d);
-  const reminder = new Date(start);
-  reminder.setDate(reminder.getDate() - 1);
-  reminder.setHours(17, 0, 0, 0);
-  return reminder.toISOString();
-}
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -122,79 +109,34 @@ export async function POST(request: Request) {
     vacature.startdatum ??
     format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "yyyy-MM-dd");
 
-  const startLabel = format(new Date(`${startdatum}T12:00:00`), "d MMMM yyyy", {
-    locale: nl,
-  });
-
-  const { data: plaatsing, error: pErr } = await supabase
-    .from("plaatsingen")
-    .insert({
-      bureau_id: bureauId,
-      vacature_id: vacature.id,
-      kandidaat_id: kandidaat.id,
-      opdrachtgever_id: opdrachtgever.id,
-      startdatum,
-      einddatum: vacature.einddatum,
-      status: "bevestigd",
-    })
-    .select("id")
-    .single();
-
-  if (pErr || !plaatsing) {
-    return NextResponse.json(
-      { error: pErr?.message ?? "Plaatsing opslaan mislukt" },
-      { status: 500 },
-    );
-  }
-
-  await supabase
-    .from("kandidaten")
-    .update({ status: "geplaatst" })
-    .eq("id", kandidaat.id);
-
-  await supabase
-    .from("campagne_kandidaten")
-    .update({ status: "geschikt" })
-    .eq("campagne_id", parsed.data.campagneId)
-    .eq("kandidaat_id", kandidaat.id);
-
-  const msg = buildPlaatsingsBevestiging({
-    kandidaatNaam: kandidaat.naam,
-    functie: vacature.titel,
-    bedrijfNaam: opdrachtgever.naam,
-    adres: opdrachtgever.adres ?? vacature.locatie ?? "—",
-    startdatum: startLabel,
-    tijd: "08:00",
-    contactpersoon: opdrachtgever.contactpersoon ?? "—",
-    contactTelefoon: opdrachtgever.telefoon ?? "—",
-  });
-
   try {
-    await sendWhatsApp({
-      to: kandidaat.telefoon,
-      message: msg,
-      bureauId,
-      kandidaatId: kandidaat.id,
-    });
+    const { plaatsing } = await createPlaatsingWithSideEffects(
+      supabase,
+      {
+        bureauId,
+        kandidaatId: kandidaat.id,
+        vacatureId: vacature.id,
+        opdrachtgeverId: opdrachtgever.id,
+        startdatum,
+        einddatum: vacature.einddatum,
+        starttijd: "08:00",
+        adres: opdrachtgever.adres ?? vacature.locatie ?? "—",
+        contactpersoon: opdrachtgever.contactpersoon ?? "—",
+        contactTelefoon: opdrachtgever.telefoon ?? "—",
+        kandidaatNaam: kandidaat.naam,
+        functieTitel: vacature.titel,
+        bedrijfNaam: opdrachtgever.naam,
+      },
+      {
+        updateCampagneKandidaat: true,
+        campagneId: parsed.data.campagneId,
+      },
+    );
+
+    const id = plaatsing.id as string;
+    return NextResponse.json({ ok: true, plaatsingId: id });
   } catch (e) {
-    console.error(e);
-    /* plaatsing blijft staan; WhatsApp kan later opnieuw */
+    const message = e instanceof Error ? e.message : "Plaatsing opslaan mislukt";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const reminderAt = reminderDayBeforeAt17(startdatum);
-
-  await inngest.send({
-    name: "plaatsing/created",
-    data: {
-      plaatsingId: plaatsing.id,
-      bureauId,
-      kandidaatId: kandidaat.id,
-      startdatum,
-      reminderAt,
-      bedrijfNaam: opdrachtgever.naam,
-      tijd: "08:00",
-    },
-  });
-
-  return NextResponse.json({ ok: true, plaatsingId: plaatsing.id });
 }
