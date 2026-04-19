@@ -60,7 +60,9 @@ export default async function PlaatsingenPage() {
           description="Na een geschikt gesprek kunt u een plaatsing bevestigen en WhatsApp sturen."
         />
       ) : (
-        <PlaatsingenTable rows={mapped} bureauId={ctx.bureau.id} />
+        <div className="overflow-x-auto">
+          <PlaatsingenTable rows={mapped} bureauId={ctx.bureau.id} />
+        </div>
       )}
     </PageWrapper>
   );
