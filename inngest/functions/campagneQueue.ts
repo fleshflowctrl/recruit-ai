@@ -218,11 +218,3 @@ export const campagneStart = inngest.createFunction(
   },
 );
 
-export const dagrapportCron = inngest.createFunction(
-  {
-    id: "dagrapport-18u",
-    name: "Dagrapport placeholder",
-    triggers: [{ cron: "0 17 * * *" }],
-  },
-  async () => ({ ok: true }),
-);

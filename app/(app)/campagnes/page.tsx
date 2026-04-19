@@ -74,8 +74,8 @@ export default async function CampagnesPage({
 
       {!rows?.length ? (
         <EmptyState
-          title="Geen campagnes"
-          description="Start een nieuwe screening-campagne."
+          title="Nog geen campagnes. Start uw eerste screening."
+          description="Koppel een vacature en selecteer kandidaten om te bellen."
           action={
             <Link href="/campagnes/nieuw" className="rounded-xl bg-primary px-4 py-2 text-sm text-white">
               Nieuwe campagne
@@ -83,6 +83,7 @@ export default async function CampagnesPage({
           }
         />
       ) : (
+        <div className="overflow-x-auto">
         <DataTable>
           <thead>
             <tr>
@@ -132,6 +133,7 @@ export default async function CampagnesPage({
             ))}
           </tbody>
         </DataTable>
+        </div>
       )}
     </PageWrapper>
   );

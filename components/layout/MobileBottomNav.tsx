@@ -15,7 +15,7 @@ export function MobileBottomNav() {
   const pathname = usePathname();
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-border bg-white py-2 lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-border bg-white py-2 md:hidden"
       aria-label="Hoofdnavigatie"
     >
       {ITEMS.map((item) => {

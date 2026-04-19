@@ -32,8 +32,8 @@ export default async function OpdrachtgeversPage() {
       />
       {!rows?.length ? (
         <EmptyState
-          title="Geen opdrachtgevers"
-          description="Voeg uw eerste opdrachtgever toe."
+          title="Nog geen opdrachtgevers. Voeg uw eerste opdrachtgever toe."
+          description="Opdrachtgevers zijn de werkgevers waarvoor u vacatures plaatst."
           action={
             <Link
               href="/opdrachtgevers/nieuw"
@@ -44,6 +44,7 @@ export default async function OpdrachtgeversPage() {
           }
         />
       ) : (
+        <div className="overflow-x-auto">
         <DataTable>
           <thead>
             <tr>
@@ -71,6 +72,7 @@ export default async function OpdrachtgeversPage() {
             ))}
           </tbody>
         </DataTable>
+        </div>
       )}
     </PageWrapper>
   );

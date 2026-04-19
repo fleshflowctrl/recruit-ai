@@ -21,8 +21,8 @@ export default async function AppLayout({
       <div className="flex min-h-screen bg-white">
         <MobileHeader />
         <Sidebar bureau={ctx.bureau} profile={ctx.profile} />
-        <div className="flex min-h-screen flex-1 flex-col pt-14 lg:pt-0 lg:pl-64">
-          <main className="flex-1 p-4 pb-24 md:p-8 lg:pb-8">{children}</main>
+        <div className="flex min-h-screen flex-1 flex-col pt-14 md:pt-0 md:pl-64">
+          <main className="flex-1 p-4 pb-24 sm:p-6 md:p-8 md:pb-8">{children}</main>
           <MobileBottomNav />
         </div>
       </div>

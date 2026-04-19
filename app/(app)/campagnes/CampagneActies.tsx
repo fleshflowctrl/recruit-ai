@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export function CampagneActies({
   campagneId,
@@ -14,11 +15,21 @@ export function CampagneActies({
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
 
-  async function call(path: string) {
+  async function call(path: string, okToast: () => void) {
     setLoading(path);
-    await fetch(path, { method: "POST" });
-    setLoading(null);
-    router.refresh();
+    try {
+      const res = await fetch(path, { method: "POST" });
+      if (!res.ok) {
+        toast.error("Er is iets misgegaan. Probeer opnieuw.");
+        return;
+      }
+      okToast();
+      router.refresh();
+    } catch {
+      toast.error("Er is iets misgegaan. Probeer opnieuw.");
+    } finally {
+      setLoading(null);
+    }
   }
 
   return (
@@ -32,7 +43,11 @@ export function CampagneActies({
             type="button"
             className="text-warning hover:underline"
             disabled={!!loading}
-            onClick={() => call(`/api/campagnes/${campagneId}/pause`)}
+            onClick={() =>
+              call(`/api/campagnes/${campagneId}/pause`, () =>
+                toast("Campagne gepauzeerd."),
+              )
+            }
           >
             Pauzeren
           </button>
@@ -40,7 +55,11 @@ export function CampagneActies({
             type="button"
             className="text-danger hover:underline"
             disabled={!!loading}
-            onClick={() => call(`/api/campagnes/${campagneId}/stop`)}
+            onClick={() =>
+              call(`/api/campagnes/${campagneId}/stop`, () =>
+                toast.success("Campagne gestopt."),
+              )
+            }
           >
             Stoppen
           </button>

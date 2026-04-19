@@ -27,7 +27,7 @@ export function WhatsAppPanel({
       const j = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(j.error ?? "Mislukt");
       setText("");
-      toast.success("WhatsApp verzonden ✅", { id: t });
+      toast.success("WhatsApp bericht verzonden.", { id: t });
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Verzenden mislukt",

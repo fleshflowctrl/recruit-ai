@@ -1,9 +1,10 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/inngest/client";
-import { campagneStart, dagrapportCron } from "@/inngest/functions/campagneQueue";
+import { campagneStart } from "@/inngest/functions/campagneQueue";
 import { beschikbaarheidCheck } from "@/inngest/functions/beschikbaarheidCheck";
 import { noShowPreventie } from "@/inngest/functions/noShowPreventie";
-import { inactiveCampagnesCron } from "@/inngest/functions/inactiveCron";
+import { campagneAfronden } from "@/inngest/functions/campagneAfronden";
+import { dagrapportCron } from "@/inngest/functions/dagrapport";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -12,7 +13,7 @@ export const { GET, POST, PUT } = serve({
     dagrapportCron,
     beschikbaarheidCheck,
     noShowPreventie,
-    inactiveCampagnesCron,
+    campagneAfronden,
   ],
 });
 

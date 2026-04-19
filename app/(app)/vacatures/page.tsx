@@ -34,15 +34,16 @@ export default async function VacaturesPage() {
       />
       {!rows?.length ? (
         <EmptyState
-          title="Geen vacatures"
-          description="Maak een vacature aan om campagnes te koppelen."
+          title="Nog geen vacatures. Voeg uw eerste vacature toe."
+          description="Vacatures koppelt u aan opdrachtgevers en campagnes."
           action={
             <Link href="/vacatures/nieuw" className="rounded-xl bg-primary px-4 py-2 text-sm text-white">
-              Nieuwe vacature
+              Vacature aanmaken
             </Link>
           }
         />
       ) : (
+        <div className="overflow-x-auto">
         <DataTable>
           <thead>
             <tr>
@@ -72,6 +73,7 @@ export default async function VacaturesPage() {
             ))}
           </tbody>
         </DataTable>
+        </div>
       )}
     </PageWrapper>
   );

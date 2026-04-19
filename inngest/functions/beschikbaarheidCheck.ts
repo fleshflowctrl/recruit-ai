@@ -2,6 +2,8 @@ import { inngest } from "@/inngest/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildBeschikbaarheidCheck, sendWhatsApp } from "@/lib/whatsapp";
 
+const BATCH = 10;
+
 export const beschikbaarheidCheck = inngest.createFunction(
   {
     id: "beschikbaarheid-check",
@@ -24,18 +26,24 @@ export const beschikbaarheidCheck = inngest.createFunction(
           .eq("bureau_id", b.id)
           .eq("status", "actief");
 
-        for (const k of kandidaten ?? []) {
-          const msg = buildBeschikbaarheidCheck(k.naam);
-          try {
-            await sendWhatsApp({
-              to: k.telefoon,
-              message: msg,
-              bureauId: b.id,
-              kandidaatId: k.id,
-            });
-          } catch (e) {
-            console.error("beschikbaarheidCheck", k.id, e);
-          }
+        const list = kandidaten ?? [];
+        for (let i = 0; i < list.length; i += BATCH) {
+          const batch = list.slice(i, i + BATCH);
+          await Promise.all(
+            batch.map(async (k) => {
+              const msg = buildBeschikbaarheidCheck(k.naam);
+              try {
+                await sendWhatsApp({
+                  to: k.telefoon,
+                  message: msg,
+                  bureauId: b.id,
+                  kandidaatId: k.id,
+                });
+              } catch (e) {
+                console.error("beschikbaarheidCheck", k.id, e);
+              }
+            }),
+          );
         }
       });
     }

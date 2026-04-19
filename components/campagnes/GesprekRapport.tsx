@@ -97,7 +97,10 @@ export function GesprekRapportModal({
       });
       const j = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(j.error ?? "Mislukt");
-      toast.success("Plaatsing bevestigd en WhatsApp verzonden ✅", { id: t });
+      toast.success(
+        "Plaatsing bevestigd! WhatsApp verstuurd naar kandidaat.",
+        { id: t },
+      );
       onUpdated?.();
       onClose();
     } catch (e) {

@@ -1,10 +1,13 @@
 import { inngest } from "@/inngest/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export const inactiveCampagnesCron = inngest.createFunction(
+/**
+ * Dagelijks 09:00 — actieve campagnes zonder openstaande wacht/bezig-kandidaten afsluiten.
+ */
+export const campagneAfronden = inngest.createFunction(
   {
-    id: "inactive-campagnes-cron",
-    name: "Campagnes zonder wacht auto-afsluiten",
+    id: "campagne-afronden",
+    name: "Campagne afronden (geen wacht/bezig)",
     triggers: [{ cron: "0 9 * * *" }],
   },
   async ({ step }) => {
@@ -16,13 +19,14 @@ export const inactiveCampagnesCron = inngest.createFunction(
         .eq("status", "actief");
 
       for (const c of campagnes ?? []) {
-        const { count } = await admin
+        const { data: pending } = await admin
           .from("campagne_kandidaten")
-          .select("*", { count: "exact", head: true })
+          .select("id")
           .eq("campagne_id", c.id)
-          .eq("status", "wacht");
+          .in("status", ["wacht", "bezig"])
+          .limit(1);
 
-        if (count === 0) {
+        if (!pending?.length) {
           await admin
             .from("campagnes")
             .update({ status: "afgerond" })

@@ -56,8 +56,8 @@ export default async function PlaatsingenPage() {
       <Header title="Plaatsingen" />
       {!mapped.length ? (
         <EmptyState
-          title="Nog geen plaatsingen"
-          description="Bevestig een plaatsing vanuit een campagne-rapport of voeg handmatig toe."
+          title="Nog geen plaatsingen. Bevestig uw eerste plaatsing vanuit een campagne."
+          description="Na een geschikt gesprek kunt u een plaatsing bevestigen en WhatsApp sturen."
         />
       ) : (
         <PlaatsingenTable rows={mapped} bureauId={ctx.bureau.id} />

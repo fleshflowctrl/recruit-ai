@@ -244,7 +244,9 @@ VALUES
 
 COMMIT;
 
--- Koppel profiel aan demo-bureau (vervang USER_ID door auth.users.id):
+-- Demo-login (5A): maak in Supabase Dashboard → Authentication → Users een gebruiker:
+--   E-mail: demo@recruitai.nl  (wachtwoord naar keuze, min. 6 tekens)
+-- Daarna in SQL Editor (vervang USER_ID door het UUID van die gebruiker uit auth.users):
 -- INSERT INTO profiles (id, bureau_id, volledige_naam)
 -- VALUES ('USER_ID', 'a0000001-0000-4000-8000-000000000001', 'Demo recruiter')
--- ON CONFLICT (id) DO UPDATE SET bureau_id = EXCLUDED.bureau_id;
+-- ON CONFLICT (id) DO UPDATE SET bureau_id = EXCLUDED.bureau_id, volledige_naam = EXCLUDED.volledige_naam;

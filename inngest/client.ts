@@ -14,3 +14,5 @@ export const inngest = new Inngest({
   eventKey: process.env.INNGEST_EVENT_KEY,
   isDev: isDevMode,
 });
+
+/** Geregistreerde functies staan in `app/api/inngest/route.ts`. */

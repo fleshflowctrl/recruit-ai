@@ -140,7 +140,7 @@ export function BerichtenGrouped({
       const j = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(j.error ?? "Mislukt");
       setDraft("");
-      toast.success("WhatsApp verzonden ✅", { id: t });
+      toast.success("WhatsApp bericht verzonden.", { id: t });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Fout", { id: t });
     } finally {
@@ -168,7 +168,10 @@ export function BerichtenGrouped({
         </div>
         <ul className="mt-3 max-h-[560px] space-y-2 overflow-y-auto">
           {list.length === 0 && (
-            <li className="text-sm text-muted">Geen conversaties.</li>
+            <li className="rounded-xl border border-dashed border-border bg-slate-50/80 p-4 text-sm text-muted">
+              Nog geen berichten. Berichten verschijnen hier zodra kandidaten
+              reageren of wanneer u WhatsApp vanuit een kandidaat verstuurt.
+            </li>
           )}
           {list.map(([kid, g]) => {
             const ongelezenInThread = g.items.filter(

@@ -32,7 +32,7 @@ export function Sidebar({
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-800 bg-sidebar text-white lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-800 bg-sidebar text-white md:flex">
       <div className="flex h-16 items-center border-b border-slate-800 px-6">
         <Link href="/dashboard" className="font-serif text-xl text-white">
           RecruitAI

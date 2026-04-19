@@ -71,6 +71,7 @@ export default async function KandidatenPage({
   if (status) qs.set("status", status);
   if (rijbewijs) qs.set("rijbewijs", rijbewijs);
   const base = qs.toString();
+  const hasFilters = Boolean(q || status || rijbewijs);
 
   return (
     <PageWrapper>
@@ -100,8 +101,16 @@ export default async function KandidatenPage({
 
       {!rows?.length ? (
         <EmptyState
-          title="Geen kandidaten gevonden"
-          description="Voeg kandidaten toe of pas de filters aan."
+          title={
+            hasFilters ?
+              "Geen kandidaten gevonden"
+            : "Nog geen kandidaten. Voeg uw eerste kandidaat toe."
+          }
+          description={
+            hasFilters ?
+              "Pas de filters aan of voeg een kandidaat toe."
+            : "Voeg handmatig toe of importeer een CSV."
+          }
           action={
             <Link
               href="/kandidaten/nieuw"
@@ -113,6 +122,7 @@ export default async function KandidatenPage({
         />
       ) : (
         <>
+          <div className="overflow-x-auto">
           <DataTable>
             <thead>
               <tr>
@@ -182,6 +192,7 @@ export default async function KandidatenPage({
               })}
             </tbody>
           </DataTable>
+          </div>
           <div className="mt-4 flex items-center justify-between text-sm text-muted">
             <span>
               Pagina {page} van {pages} ({count ?? 0} totaal)

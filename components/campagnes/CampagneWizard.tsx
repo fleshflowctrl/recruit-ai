@@ -111,7 +111,7 @@ export function CampagneWizard({
         setLoading(false);
         return;
       }
-      toast.success("Campagne gestart ✅");
+      toast.success("Campagne gestart! AI belt kandidaten op.");
     }
 
     setLoading(false);

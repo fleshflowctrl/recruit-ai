@@ -48,9 +48,10 @@ export function KandidaatForm({ bureauId }: { bureauId: string }) {
     setLoading(false);
     if (err) {
       setError(err.message);
+      toast.error("Er is iets misgegaan. Probeer opnieuw.");
       return;
     }
-    toast.success("Kandidaat toegevoegd ✅");
+    toast.success("Kandidaat succesvol toegevoegd.");
     router.push(`/kandidaten/${data?.id}`);
     router.refresh();
   }

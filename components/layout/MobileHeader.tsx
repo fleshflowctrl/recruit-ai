@@ -12,7 +12,7 @@ export function MobileHeader() {
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-white px-4 lg:hidden">
+      <header className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-white px-4 md:hidden">
         <button
           type="button"
           className="rounded-lg p-2 text-slate-800 hover:bg-slate-100"
@@ -29,7 +29,7 @@ export function MobileHeader() {
 
       {open && (
         <div
-          className="fixed inset-0 z-[60] lg:hidden"
+          className="fixed inset-0 z-[60] md:hidden"
           role="dialog"
           aria-modal="true"
         >
