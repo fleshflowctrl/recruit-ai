@@ -76,3 +76,39 @@ export async function sendDagrapportEmail(opts: {
   });
   return { skipped: false as const };
 }
+
+export async function sendZiekMeldingNaarBureau(opts: {
+  bureauEmail: string;
+  kandidaatNaam: string;
+  bericht: string;
+}) {
+  const resend = getResend();
+  if (!resend) {
+    console.warn("RESEND_API_KEY ontbreekt; ziekmelding niet gemaild");
+    return { skipped: true as const };
+  }
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM ?? "RecruitAI <onboarding@resend.dev>",
+    to: opts.bureauEmail,
+    subject: `Ziekmelding gemeld — ${opts.kandidaatNaam}`,
+    html: `<p>Kandidaat <strong>${opts.kandidaatNaam}</strong> stuurde:</p><blockquote>${opts.bericht}</blockquote>`,
+  });
+  return { skipped: false as const };
+}
+
+export async function sendNoShowAlertNaarBureau(opts: {
+  bureauEmail: string;
+  kandidaatNaam: string;
+}) {
+  const resend = getResend();
+  if (!resend) return { skipped: true as const };
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM ?? "RecruitAI <onboarding@resend.dev>",
+    to: opts.bureauEmail,
+    subject: `Geen bevestiging WhatsApp — ${opts.kandidaatNaam}`,
+    html: `<p>De kandidaat <strong>${opts.kandidaatNaam}</strong> heeft binnen 2 uur niet bevestigd op de no-show herinnering.</p>`,
+  });
+  return { skipped: false as const };
+}

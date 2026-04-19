@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { DataTable, Th, Td } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { PlaatsingenTable } from "@/components/plaatsingen/PlaatsingenTable";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -35,34 +35,32 @@ export default async function PlaatsingenPage() {
     for (const o of data ?? []) on[o.id] = o.naam;
   }
 
+  const mapped =
+    rows?.map((p) => ({
+      id: p.id,
+      kandidaatId: p.kandidaat_id ?? "",
+      kandidaatNaam: p.kandidaat_id ? kn[p.kandidaat_id] ?? "—" : "—",
+      opdrachtgeverNaam: p.opdrachtgever_id ? on[p.opdrachtgever_id] ?? "—" : "—",
+      vacatureTitel: p.vacature_id ? vn[p.vacature_id] ?? "—" : "—",
+      startdatum: p.startdatum,
+      einddatum: p.einddatum,
+      status: p.status,
+      uurtariefKandidaat:
+        p.uurtarief_kandidaat != null ? String(p.uurtarief_kandidaat) : null,
+      uurtariefOpdrachtgever:
+        p.uurtarief_opdrachtgever != null ? String(p.uurtarief_opdrachtgever) : null,
+    })) ?? [];
+
   return (
     <PageWrapper>
       <Header title="Plaatsingen" />
-      {!rows?.length ? (
-        <EmptyState title="Geen plaatsingen" description="Plaatsingen verschijnen hier na koppeling in het systeem." />
+      {!mapped.length ? (
+        <EmptyState
+          title="Nog geen plaatsingen"
+          description="Bevestig een plaatsing vanuit een campagne-rapport of voeg handmatig toe."
+        />
       ) : (
-        <DataTable>
-          <thead>
-            <tr>
-              <Th>Kandidaat</Th>
-              <Th>Vacature</Th>
-              <Th>Opdrachtgever</Th>
-              <Th>Status</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((p) => (
-              <tr key={p.id}>
-                <Td>{p.kandidaat_id ? kn[p.kandidaat_id] ?? "—" : "—"}</Td>
-                <Td>{p.vacature_id ? vn[p.vacature_id] ?? "—" : "—"}</Td>
-                <Td>
-                  {p.opdrachtgever_id ? on[p.opdrachtgever_id] ?? "—" : "—"}
-                </Td>
-                <Td>{p.status}</Td>
-              </tr>
-            ))}
-          </tbody>
-        </DataTable>
+        <PlaatsingenTable rows={mapped} bureauId={ctx.bureau.id} />
       )}
     </PageWrapper>
   );

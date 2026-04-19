@@ -19,6 +19,12 @@ const MAP: Record<string, { label: string; className: string }> = {
   open: { label: "Open", className: "bg-blue-50 text-primary ring-blue-200" },
   bezig: { label: "Bezig", className: "bg-amber-50 text-warning ring-amber-200" },
   voltooid: { label: "Voltooid", className: "bg-green-50 text-success ring-green-200" },
+  bevestigd: { label: "Bevestigd", className: "bg-green-50 text-success ring-green-200" },
+  bevestigd_door_kandidaat: {
+    label: "Bevestigd door kandidaat",
+    className: "bg-emerald-50 text-emerald-800 ring-emerald-200",
+  },
+  beëindigd: { label: "Beëindigd", className: "bg-slate-100 text-muted ring-slate-200" },
 };
 
 export function StatusBadge({ status }: { status: string | null | undefined }) {

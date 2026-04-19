@@ -29,6 +29,10 @@ export async function createCheckoutSession(opts: {
     success_url: opts.successUrl,
     cancel_url: opts.cancelUrl,
     client_reference_id: opts.bureauId,
+    metadata: { bureau_id: opts.bureauId },
+    subscription_data: {
+      metadata: { bureau_id: opts.bureauId },
+    },
     ...(opts.customerId ? { customer: opts.customerId } : {}),
   });
   return session;

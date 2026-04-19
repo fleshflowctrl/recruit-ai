@@ -1,27 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
-export function WhatsAppPanel({ kandidaatId }: { kandidaatId: string }) {
+export function WhatsAppPanel({
+  kandidaatId,
+  bureauId,
+}: {
+  kandidaatId: string;
+  bureauId: string;
+}) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
 
   async function send() {
     setLoading(true);
-    setMsg(null);
+    const t = toast.loading("WhatsApp verzenden…");
     try {
       const res = await fetch("/api/whatsapp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kandidaatId, bericht: text }),
+        body: JSON.stringify({
+          kandidaatId,
+          bureauId,
+          message: text,
+          type: "vrij",
+        }),
       });
-      const j = await res.json();
+      const j = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(j.error ?? "Mislukt");
       setText("");
-      setMsg("Bericht verzonden.");
+      toast.success("WhatsApp verzonden ✅", { id: t });
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Fout");
+      toast.error(
+        e instanceof Error ? e.message : "Verzenden mislukt",
+        { id: t },
+      );
     } finally {
       setLoading(false);
     }
@@ -45,7 +59,6 @@ export function WhatsAppPanel({ kandidaatId }: { kandidaatId: string }) {
       >
         {loading ? "Verzenden…" : "Verstuur via WhatsApp"}
       </button>
-      {msg && <p className="mt-2 text-xs text-muted">{msg}</p>}
     </div>
   );
 }

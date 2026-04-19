@@ -41,7 +41,10 @@ AFSLUITING:
  */
 export async function startOutboundCall(
   params: OutboundCallParams,
+  options?: { naarTelefoon?: string },
 ): Promise<{ callId: string }> {
+  const dial = options?.naarTelefoon ?? params.telefoon;
+
   if (process.env.TELNYX_MOCK === "true") {
     return { callId: `mock_${params.kandidaatId}_${Date.now()}` };
   }
@@ -60,7 +63,7 @@ export async function startOutboundCall(
 
   const body = {
     connection_id: connectionId,
-    to: params.telefoon,
+    to: dial,
     from,
     webhook_url: `${appUrl}/api/telnyx/webhook`,
     webhook_url_method: "POST",

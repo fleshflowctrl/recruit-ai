@@ -1,12 +1,43 @@
 import { createClient } from "@/lib/supabase/server";
-import { sendWhatsAppMessage } from "@/lib/whatsapp";
+import { buildPlaatsingsBevestiging, sendWhatsApp } from "@/lib/whatsapp";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const schema = z.object({
-  kandidaatId: z.string().uuid(),
-  bericht: z.string().min(1).max(4000),
+const plaatsingSchema = z.object({
+  kandidaatNaam: z.string(),
+  functie: z.string(),
+  bedrijfNaam: z.string(),
+  adres: z.string(),
+  startdatum: z.string(),
+  tijd: z.string(),
+  contactpersoon: z.string(),
+  contactTelefoon: z.string(),
+  meeNemen: z.string().optional(),
 });
+
+const schema = z
+  .object({
+    kandidaatId: z.string().uuid(),
+    bureauId: z.string().uuid(),
+    message: z.string().min(1).max(4000).optional(),
+    type: z.enum(["vrij", "plaatsing_bevestiging"]).optional(),
+    plaatsing: plaatsingSchema.optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === "plaatsing_bevestiging") {
+      if (!data.plaatsing) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "plaatsing verplicht bij type plaatsing_bevestiging",
+        });
+      }
+    } else if (!data.message?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "message verplicht",
+      });
+    }
+  });
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -34,15 +65,9 @@ export async function POST(request: Request) {
     .select("bureau_id")
     .eq("id", user.id)
     .single();
-  if (!profile) {
-    return NextResponse.json({ error: "Geen profiel" }, { status: 403 });
+  if (!profile || profile.bureau_id !== parsed.data.bureauId) {
+    return NextResponse.json({ error: "Geen toegang tot dit bureau" }, { status: 403 });
   }
-
-  const { data: bureau } = await supabase
-    .from("bureaus")
-    .select("*")
-    .eq("id", profile.bureau_id)
-    .single();
 
   const { data: kandidaat } = await supabase
     .from("kandidaten")
@@ -51,33 +76,28 @@ export async function POST(request: Request) {
     .eq("bureau_id", profile.bureau_id)
     .single();
 
-  if (!bureau || !kandidaat) {
-    return NextResponse.json({ error: "Niet gevonden" }, { status: 404 });
+  if (!kandidaat) {
+    return NextResponse.json({ error: "Kandidaat niet gevonden" }, { status: 404 });
   }
 
-  const from =
-    bureau.whatsapp_nummer ??
-    process.env.TELNYX_PHONE_NUMBER ??
-    "";
+  let text: string;
+  if (parsed.data.type === "plaatsing_bevestiging" && parsed.data.plaatsing) {
+    text = buildPlaatsingsBevestiging({
+      ...parsed.data.plaatsing,
+      kandidaatNaam: parsed.data.plaatsing.kandidaatNaam || kandidaat.naam,
+    });
+  } else {
+    text = parsed.data.message ?? "";
+  }
 
   try {
-    const { messageId } = await sendWhatsAppMessage({
-      from,
+    await sendWhatsApp({
       to: kandidaat.telefoon,
-      text: parsed.data.bericht,
+      message: text,
+      bureauId: profile.bureau_id,
+      kandidaatId: kandidaat.id,
     });
-
-    await supabase.from("berichten").insert({
-      bureau_id: profile.bureau_id,
-      kandidaat_id: kandidaat.id,
-      kanaal: "whatsapp",
-      richting: "outbound",
-      inhoud: parsed.data.bericht,
-      status: "verzonden",
-      telnyx_message_id: messageId,
-    });
-
-    return NextResponse.json({ ok: true, messageId });
+    return NextResponse.json({ ok: true });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Verzenden mislukt";
     return NextResponse.json({ error: message }, { status: 500 });

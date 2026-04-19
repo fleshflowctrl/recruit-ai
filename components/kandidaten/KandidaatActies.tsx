@@ -1,29 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export function KandidaatActies({
   kandidaatId,
+  campagneId,
 }: {
   kandidaatId: string;
+  campagneId?: string | null;
 }) {
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
 
   async function bel() {
     setLoading(true);
-    setMsg(null);
+    const t = toast.loading("Oproep starten…");
     try {
       const res = await fetch("/api/telnyx/call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kandidaatId }),
+        body: JSON.stringify({
+          kandidaatId,
+          ...(campagneId ? { campagneId } : {}),
+        }),
       });
-      const j = await res.json();
+      const j = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(j.error ?? "Mislukt");
-      setMsg("Oproep gestart.");
+      toast.success("Oproep gestart ✅", { id: t });
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Fout");
+      toast.error(
+        e instanceof Error ? e.message : "Fout bij bellen ❌",
+        { id: t },
+      );
     } finally {
       setLoading(false);
     }
@@ -39,7 +47,6 @@ export function KandidaatActies({
       >
         {loading ? "Bezig…" : "Bel nu"}
       </button>
-      {msg && <p className="text-xs text-muted">{msg}</p>}
     </div>
   );
 }

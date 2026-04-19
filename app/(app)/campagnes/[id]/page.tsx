@@ -1,17 +1,15 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { ScoreBadge } from "@/components/ui/ScoreBadge";
-import { DataTable, Th, Td } from "@/components/ui/DataTable";
 import { VoortgangsBalk } from "@/components/campagnes/VoortgangsBalk";
 import { CampagneActions } from "./CampagneActions";
 import { ExportGeschiktenButton } from "./ExportGeschiktenButton";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { CampagneRefresh } from "./CampagneRefresh";
-import type { Gesprek } from "@/lib/types";
+import type { Gesprek, Kandidaat, CampagneKandidaat } from "@/lib/types";
+import { CampagneKandidatenTable } from "@/components/campagnes/CampagneKandidatenTable";
 
 export default async function CampagneDetailPage({
   params,
@@ -47,10 +45,35 @@ export default async function CampagneDetailPage({
   }
   const { data: gesprekken } = await gesprekkenQuery;
 
+  const sorted = [...(gesprekken ?? [])].sort(
+    (a, b) =>
+      new Date(b.aangemaakt_op).getTime() -
+      new Date(a.aangemaakt_op).getTime(),
+  );
   const gMap: Record<string, Gesprek> = {};
-  for (const g of gesprekken ?? []) {
-    if (g.kandidaat_id) gMap[g.kandidaat_id] = g;
+  for (const g of sorted) {
+    if (g.kandidaat_id && !gMap[g.kandidaat_id]) {
+      gMap[g.kandidaat_id] = g as Gesprek;
+    }
   }
+
+  const tableRows = (ckRows ?? []).map((r) => {
+    const k = r.kandidaten as Kandidaat;
+    const ck = r as CampagneKandidaat & { kandidaten: Kandidaat };
+    return {
+      campagneKandidaat: {
+        id: ck.id,
+        campagne_id: ck.campagne_id,
+        kandidaat_id: ck.kandidaat_id,
+        status: ck.status,
+        bel_pogingen: ck.bel_pogingen,
+        volgende_bel_poging: ck.volgende_bel_poging,
+        aangemaakt_op: ck.aangemaakt_op,
+      },
+      kandidaat: k,
+      gesprek: gMap[k.id] ?? null,
+    };
+  });
 
   const totaal = c.totaal_kandidaten ?? 0;
   const gebeld = c.gebeld ?? 0;
@@ -98,53 +121,7 @@ export default async function CampagneDetailPage({
         <strong>Geen gehoor:</strong> {c.geen_gehoor ?? 0}
       </div>
 
-      <DataTable>
-        <thead>
-          <tr>
-            <Th>Naam</Th>
-            <Th>Telefoon</Th>
-            <Th>Status</Th>
-            <Th>Score</Th>
-            <Th>Aanbeveling</Th>
-            <Th>Duur</Th>
-            <Th>Belpogingen</Th>
-            <Th>Acties</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {(ckRows ?? []).map((r) => {
-            const k = r.kandidaten as {
-              id: string;
-              naam: string;
-              telefoon: string;
-            };
-            const g = gMap[k.id];
-            return (
-              <tr key={r.id}>
-                <Td>{k.naam}</Td>
-                <Td>{k.telefoon}</Td>
-                <Td>
-                  <StatusBadge status={r.status} />
-                </Td>
-                <Td>
-                  <ScoreBadge score={g?.score ?? null} />
-                </Td>
-                <Td>{g?.aanbeveling ?? "—"}</Td>
-                <Td>{g?.duur_seconden ? `${g.duur_seconden}s` : "—"}</Td>
-                <Td>{r.bel_pogingen}</Td>
-                <Td>
-                  <Link
-                    href={`/kandidaten/${k.id}`}
-                    className="text-primary hover:underline"
-                  >
-                    Rapport
-                  </Link>
-                </Td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </DataTable>
+      <CampagneKandidatenTable campagneId={c.id} rows={tableRows} />
     </PageWrapper>
   );
 }

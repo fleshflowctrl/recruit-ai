@@ -62,11 +62,20 @@ export default async function KandidaatDetailPage({
     .from("berichten")
     .select("*")
     .eq("kandidaat_id", id)
-    .order("aangemaakt_op", { ascending: false })
-    .limit(5);
+    .order("aangemaakt_op", { ascending: true });
 
-  const scores =
-    (gesprekken ?? []).map((g) => g.score).filter((s): s is number => s != null);
+  const latestCampagneId =
+    (gesprekken ?? []).find((g) => g.campagne_id)?.campagne_id ?? null;
+
+  const scoresMetDatum = (gesprekken ?? [])
+    .filter((g) => g.score != null)
+    .map((g) => ({
+      score: g.score as number,
+      datum: g.aangemaakt_op,
+      campagne: g.campagne_id ? campagneNaam[g.campagne_id] : undefined,
+    }));
+
+  const scores = scoresMetDatum.map((s) => s.score);
   const avg =
     scores.length ?
       Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
@@ -135,6 +144,29 @@ export default async function KandidaatDetailPage({
           </section>
 
           <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+            <h2 className="font-serif text-lg text-slate-900">Score-geschiedenis</h2>
+            <ul className="mt-3 space-y-2 text-sm">
+              {scoresMetDatum.length === 0 && (
+                <li className="text-muted">Nog geen scores.</li>
+              )}
+              {scoresMetDatum.map((s, i) => (
+                <li
+                  key={`${s.datum}-${i}`}
+                  className="flex items-center justify-between rounded-lg border border-border px-3 py-2"
+                >
+                  <span>
+                    <ScoreBadge score={s.score} />{" "}
+                    <span className="text-muted">
+                      {formatDateNl(s.datum)}
+                      {s.campagne ? ` · ${s.campagne}` : ""}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
             <h2 className="font-serif text-lg text-slate-900">Gesprekken</h2>
             <ul className="mt-4 space-y-3">
               {(gesprekken ?? []).length === 0 && (
@@ -178,7 +210,10 @@ export default async function KandidaatDetailPage({
           <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
             <h2 className="font-serif text-lg text-slate-900">Snelle acties</h2>
             <div className="mt-4 space-y-3">
-              <KandidaatActies kandidaatId={k.id} />
+              <KandidaatActies
+                kandidaatId={k.id}
+                campagneId={latestCampagneId}
+              />
               <Link
                 href={`/kandidaten/${k.id}?whatsapp=1`}
                 className="block w-full rounded-xl border border-border py-2 text-center text-sm font-medium hover:bg-slate-50"
@@ -211,10 +246,21 @@ export default async function KandidaatDetailPage({
             <h2 className="font-serif text-lg text-slate-900">
               WhatsApp-geschiedenis
             </h2>
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-3 max-h-64 space-y-2 overflow-y-auto text-sm">
               {(berichten ?? []).map((b) => (
-                <li key={b.id} className="rounded-lg bg-slate-50 p-2">
-                  {b.inhoud}
+                <li
+                  key={b.id}
+                  className={`rounded-lg p-2 ${
+                    b.richting === "inbound"
+                      ? "ml-4 bg-green-50 text-slate-800"
+                      : "mr-4 bg-slate-100 text-slate-800"
+                  }`}
+                >
+                  <span className="text-xs text-muted">
+                    {b.richting === "inbound" ? "Inkomend" : "Uitgaand"} ·{" "}
+                    {formatDateNl(b.aangemaakt_op)}
+                  </span>
+                  <p className="mt-1 whitespace-pre-wrap">{b.inhoud}</p>
                 </li>
               ))}
               {!berichten?.length && (
@@ -229,7 +275,7 @@ export default async function KandidaatDetailPage({
             </Link>
           </div>
 
-          <WhatsAppPanel kandidaatId={k.id} />
+          <WhatsAppPanel kandidaatId={k.id} bureauId={ctx.bureau.id} />
         </div>
       </div>
     </PageWrapper>

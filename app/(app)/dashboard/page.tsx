@@ -20,11 +20,14 @@ export default async function DashboardPage() {
   const bureauId = ctx.bureau.id;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
   const [
     { count: actieveCampagnes },
-    { data: gesprekkenVandaag },
-    { data: geschiktGesprekken },
+    { count: gebeldVandaagVoltooid },
+    { data: voltooidVandaagLijst },
+    { data: bureauCredits },
     { count: plaatsingenActief },
     { count: openVacatures },
     { data: recenteCampagnes },
@@ -36,19 +39,28 @@ export default async function DashboardPage() {
       .eq("status", "actief"),
     supabase
       .from("gesprekken")
-      .select("id")
+      .select("*", { count: "exact", head: true })
       .eq("bureau_id", bureauId)
-      .gte("aangemaakt_op", today.toISOString()),
+      .eq("status", "voltooid")
+      .gte("aangemaakt_op", today.toISOString())
+      .lt("aangemaakt_op", tomorrow.toISOString()),
     supabase
       .from("gesprekken")
       .select("aanbeveling")
       .eq("bureau_id", bureauId)
-      .not("aanbeveling", "is", null),
+      .eq("status", "voltooid")
+      .gte("aangemaakt_op", today.toISOString())
+      .lt("aangemaakt_op", tomorrow.toISOString()),
+    supabase
+      .from("bureaus")
+      .select("credits_resterend")
+      .eq("id", bureauId)
+      .single(),
     supabase
       .from("plaatsingen")
       .select("*", { count: "exact", head: true })
       .eq("bureau_id", bureauId)
-      .eq("status", "bevestigd"),
+      .neq("status", "beëindigd"),
     supabase
       .from("vacatures")
       .select("*", { count: "exact", head: true })
@@ -62,11 +74,15 @@ export default async function DashboardPage() {
       .limit(8),
   ]);
 
-  const tot = geschiktGesprekken?.length ?? 0;
-  const geschikt =
-    geschiktGesprekken?.filter((g) => g.aanbeveling === "GESCHIKT").length ?? 0;
+  const totGebeld = voltooidVandaagLijst?.length ?? 0;
+  const geschiktVandaag =
+    voltooidVandaagLijst?.filter((g) => g.aanbeveling === "GESCHIKT")
+      .length ?? 0;
   const pct =
-    tot > 0 ? Math.round((geschikt / tot) * 100) : 0;
+    totGebeld > 0 ? Math.round((geschiktVandaag / totGebeld) * 100) : 0;
+
+  const credits =
+    bureauCredits?.credits_resterend ?? ctx.bureau.credits_resterend;
 
   const datumLabel = format(new Date(), "EEEE d MMMM yyyy", { locale: nl });
 
@@ -93,7 +109,7 @@ export default async function DashboardPage() {
         />
         <StatCard
           label="Kandidaten gebeld vandaag"
-          value={gesprekkenVandaag?.length ?? 0}
+          value={gebeldVandaagVoltooid ?? 0}
           accent="cyan"
         />
         <StatCard
@@ -103,8 +119,8 @@ export default async function DashboardPage() {
         />
         <StatCard
           label="Credits resterend"
-          value={ctx.bureau.credits_resterend}
-          accent={ctx.bureau.credits_resterend < 20 ? "orange" : "blue"}
+          value={credits}
+          accent={credits < 20 ? "orange" : "blue"}
         />
         <StatCard
           label="Actieve plaatsingen"
@@ -131,48 +147,50 @@ export default async function DashboardPage() {
               Nieuwe campagne
             </Link>
           </div>
-          <DataTable>
-            <thead>
-              <tr>
-                <Th>Naam</Th>
-                <Th>Type</Th>
-                <Th>Voortgang</Th>
-                <Th>Geschikt</Th>
-                <Th>Status</Th>
-                <Th>Datum</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {(recenteCampagnes ?? []).map((c) => (
-                <tr key={c.id}>
-                  <Td>
-                    <Link
-                      href={`/campagnes/${c.id}`}
-                      className="font-medium text-primary hover:underline"
-                    >
-                      {c.naam}
-                    </Link>
-                  </Td>
-                  <Td className="capitalize">{c.type}</Td>
-                  <Td>
-                    <VoortgangsBalk
-                      gebeld={c.gebeld ?? 0}
-                      totaal={c.totaal_kandidaten ?? 0}
-                    />
-                  </Td>
-                  <Td>{c.geschikt ?? 0}</Td>
-                  <Td>
-                    <StatusBadge status={c.status} />
-                  </Td>
-                  <Td className="whitespace-nowrap text-muted">
-                    {format(new Date(c.aangemaakt_op), "d MMM yyyy", {
-                      locale: nl,
-                    })}
-                  </Td>
+          <div className="overflow-x-auto">
+            <DataTable>
+              <thead>
+                <tr>
+                  <Th>Naam</Th>
+                  <Th>Type</Th>
+                  <Th>Voortgang</Th>
+                  <Th>Geschikt</Th>
+                  <Th>Status</Th>
+                  <Th>Datum</Th>
                 </tr>
-              ))}
-            </tbody>
-          </DataTable>
+              </thead>
+              <tbody>
+                {(recenteCampagnes ?? []).map((c) => (
+                  <tr key={c.id}>
+                    <Td>
+                      <Link
+                        href={`/campagnes/${c.id}`}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        {c.naam}
+                      </Link>
+                    </Td>
+                    <Td className="capitalize">{c.type}</Td>
+                    <Td>
+                      <VoortgangsBalk
+                        gebeld={c.gebeld ?? 0}
+                        totaal={c.totaal_kandidaten ?? 0}
+                      />
+                    </Td>
+                    <Td>{c.geschikt ?? 0}</Td>
+                    <Td>
+                      <StatusBadge status={c.status} />
+                    </Td>
+                    <Td className="whitespace-nowrap text-muted">
+                      {format(new Date(c.aangemaakt_op), "d MMM yyyy", {
+                        locale: nl,
+                      })}
+                    </Td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          </div>
         </section>
 
         <section className="lg:col-span-2">

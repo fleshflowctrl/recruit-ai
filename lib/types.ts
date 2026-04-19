@@ -165,6 +165,7 @@ export interface Bericht {
   status: string;
   telnyx_message_id: string | null;
   aangemaakt_op: string;
+  gelezen?: boolean | null;
 }
 
 export interface AnalyseResultaat {

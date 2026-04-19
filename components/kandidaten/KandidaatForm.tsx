@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 
 export function KandidaatForm({ bureauId }: { bureauId: string }) {
@@ -49,6 +50,7 @@ export function KandidaatForm({ bureauId }: { bureauId: string }) {
       setError(err.message);
       return;
     }
+    toast.success("Kandidaat toegevoegd ✅");
     router.push(`/kandidaten/${data?.id}`);
     router.refresh();
   }

@@ -1,10 +1,11 @@
+import type { MouseEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function DataTable({
   children,
   className,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -25,7 +26,7 @@ export function Th({
   children,
   className,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -43,12 +44,17 @@ export function Th({
 export function Td({
   children,
   className,
+  onClick,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
+  onClick?: (e: MouseEvent<HTMLTableCellElement>) => void;
 }) {
   return (
-    <td className={cn("border-t border-border px-4 py-3 text-slate-800", className)}>
+    <td
+      className={cn("border-t border-border px-4 py-3 text-slate-800", className)}
+      onClick={onClick}
+    >
       {children}
     </td>
   );

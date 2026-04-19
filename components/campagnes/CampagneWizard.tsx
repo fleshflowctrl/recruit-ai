@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 import { CAMPAGNE_TYPES, DEFAULT_SCREENING_VRAGEN } from "@/lib/constants";
 import { ScreeningVragenEditor } from "./ScreeningVragen";
@@ -95,6 +96,7 @@ export function CampagneWizard({
         setLoading(false);
         return;
       }
+      toast.success("Campagne gestart ✅");
     }
 
     setLoading(false);
