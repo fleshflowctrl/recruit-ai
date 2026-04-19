@@ -46,15 +46,42 @@ export async function POST(
     );
   }
 
-  await supabase
+  const { error: updErr } = await supabase
     .from("campagnes")
     .update({ status: "actief" })
     .eq("id", campagneId);
 
-  await inngest.send({
-    name: "campagne/start",
-    data: { campagneId, bureauId: profile.bureau_id },
-  });
+  if (updErr) {
+    return NextResponse.json(
+      { error: updErr.message ?? "Campagne bijwerken mislukt" },
+      { status: 500 },
+    );
+  }
+
+  const skipInngest =
+    process.env.NODE_ENV === "development" &&
+    process.env.SKIP_INNGEST_SEND === "true";
+
+  if (!skipInngest) {
+    try {
+      await inngest.send({
+        name: "campagne/start",
+        data: { campagneId, bureauId: profile.bureau_id },
+      });
+    } catch (e) {
+      await supabase
+        .from("campagnes")
+        .update({ status: "concept" })
+        .eq("id", campagneId);
+      const msg = e instanceof Error ? e.message : "Inngest niet bereikbaar";
+      return NextResponse.json(
+        {
+          error: `Starten mislukt: ${msg}. Start de Inngest dev server (npx inngest-cli@latest dev), zet INNGEST_EVENT_KEY voor productie, of SKIP_INNGEST_SEND=true in .env.local om de wachtrij over te slaan.`,
+        },
+        { status: 502 },
+      );
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }
