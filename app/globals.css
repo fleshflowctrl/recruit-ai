@@ -246,3 +246,155 @@ body {
     background: var(--cream-surface);
   }
 }
+
+@keyframes live-hero-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes live-call-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.live-hero-pulse-dot {
+  animation: live-hero-pulse 1.4s infinite;
+}
+
+.live-call-pulse-dot {
+  animation: live-call-pulse 0.9s infinite;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #b0afa9;
+}
+
+.cream-panel {
+  background: #f5f4f0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.campagne-card {
+  background: #fafaf8;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 9px;
+  padding: 14px 16px;
+  transition: all 150ms;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.campagne-card:hover {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  transform: translateX(2px);
+}
+
+.cc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.cc-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a18;
+}
+
+.cc-type {
+  font-size: 11px;
+  color: #b0afa9;
+  margin-top: 2px;
+}
+
+.cc-nums {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.cc-num {
+  font-size: 11px;
+  color: #8a8a85;
+}
+
+.cc-num b {
+  font-weight: 600;
+  font-family: ui-monospace, monospace;
+}
+
+.cc-num.green b {
+  color: #1a5c2a;
+}
+
+.cc-num.red b {
+  color: #8b2020;
+}
+
+.btn-primary {
+  background: #1a1a18;
+  color: #fafaf8;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 150ms;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  color: #1a1a18;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 150ms;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-secondary:hover {
+  background: #f5f4f0;
+}
+
+.text-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a18;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
