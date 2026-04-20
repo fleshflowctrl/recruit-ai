@@ -5,6 +5,113 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+
+  /* Flow builder design system */
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f3f4f6;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-warning: #b45309;
+  --color-text-info: #1d4ed8;
+  --color-text-danger: #b91c1c;
+  --color-border-tertiary: #e5e7eb;
+  --color-border-secondary: #d1d5db;
+  --color-border-info: #93c5fd;
+  --color-border-danger: #fca5a5;
+  --color-background-warning: #fef3c7;
+  --color-background-info: #eff6ff;
+  --color-background-danger: #fef2f2;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+/* Flow builder: dashed vertical connector */
+.flow-dashed-connector {
+  width: 1.5px;
+  height: 20px;
+  margin-left: 60px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-border-tertiary) 0px,
+    var(--color-border-tertiary) 4px,
+    transparent 4px,
+    transparent 7px
+  );
+}
+
+.flow-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 200ms;
+  padding: 0;
+}
+
+.flow-toggle[data-state="on"] {
+  background: #22c55e;
+}
+
+.flow-toggle[data-state="off"] {
+  background: var(--color-border-tertiary);
+}
+
+.flow-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: left 150ms;
+  left: 3px;
+}
+
+.flow-toggle[data-state="on"]::after {
+  left: 19px;
+}
+
+.flow-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+}
+
+.flow-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  font-size: 13px;
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.flow-input:focus {
+  border-color: var(--color-border-info);
+}
+
+select.flow-input {
+  cursor: pointer;
+}
+
+.flow-field {
+  margin-bottom: 14px;
+}
+
+.flow-field:last-child {
+  margin-bottom: 0;
 }
 
 body {

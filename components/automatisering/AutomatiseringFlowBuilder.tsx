@@ -30,25 +30,41 @@ import {
   LIBRARY_BLOCKS,
   defaultOptionalSettings,
 } from "@/lib/automatisering";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { StepSettingsPanel, type PanelSelection } from "./StepSettingsPanel";
 
 const DROP_ID = "flow-drop";
 
+const pastels = {
+  trigger: "#DBEAFE",
+  ai: "#DCFCE7",
+  whatsapp: "#F3E8FF",
+} as const;
+
+const PASTEL_BY_KIND: Record<OptioneelStapKind, string> = {
+  no_show: "#FEF9C3",
+  beschikbaarheid: "#F3E8FF",
+  check_in: "#FFE4E6",
+  uren: "#FED7AA",
+  evaluatie: "#DBEAFE",
+  dagrapport: "#DCFCE7",
+  ziekte: "#FEE2E2",
+};
+
+const borderTertiary = { border: "0.5px solid var(--color-border-tertiary)" };
+
 function Connector() {
   return (
-    <div className="flex justify-center py-0.5" aria-hidden>
-      <div className="h-6 w-px bg-border" />
+    <div className="py-[3px]" aria-hidden>
+      <div
+        className="ml-[60px] h-[20px] w-[1.5px] shrink-0 rounded-full"
+        style={{ background: "var(--color-border-tertiary)" }}
+      />
     </div>
   );
 }
 
 function DashedConnector() {
-  return (
-    <div className="flex justify-center py-0.5" aria-hidden>
-      <div className="h-6 w-px border-l border-dashed border-slate-300" />
-    </div>
-  );
+  return <div className="flow-dashed-connector" aria-hidden />;
 }
 
 function LibraryCard({
@@ -63,6 +79,7 @@ function LibraryCard({
     disabled,
     data: { type: "library", kind: block.kind },
   });
+  const bg = PASTEL_BY_KIND[block.kind];
   return (
     <button
       type="button"
@@ -70,24 +87,45 @@ function LibraryCard({
       {...listeners}
       {...attributes}
       disabled={disabled}
+      style={{
+        ...borderTertiary,
+        borderRadius: "var(--border-radius-md)",
+        background: "var(--color-background-primary)",
+        gap: 10,
+        padding: "10px 12px",
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) e.currentTarget.style.borderColor = "var(--color-border-secondary)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "var(--color-border-tertiary)";
+      }}
       className={cn(
-        "flex w-full cursor-grab select-none items-start gap-3 rounded-xl border border-border bg-white p-3 text-left text-sm shadow-sm transition active:cursor-grabbing",
-        disabled && "cursor-not-allowed opacity-40",
+        "flex w-full cursor-grab select-none items-center text-left transition-colors active:cursor-grabbing",
+        disabled && "cursor-not-allowed opacity-[0.3]",
         isDragging && "opacity-50",
       )}
     >
       <span
-        className={cn(
-          "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg ring-1 ring-inset",
-          block.chipClass,
-        )}
+        className="flex h-[28px] w-[28px] shrink-0 items-center justify-center text-[14px]"
+        style={{ borderRadius: 8, background: bg }}
         aria-hidden
       >
         {block.emoji}
       </span>
-      <span className="min-w-0">
-        <span className="font-medium text-slate-900">{block.naam}</span>
-        <span className="mt-0.5 block text-xs text-muted">{block.subtitle}</span>
+      <span className="min-w-0 flex-1">
+        <span
+          className="block font-medium leading-tight"
+          style={{ fontSize: 13, color: "var(--color-text-primary)" }}
+        >
+          {block.naam}
+        </span>
+        <span
+          className="mt-0.5 block leading-snug"
+          style={{ fontSize: 11, color: "var(--color-text-secondary)" }}
+        >
+          {block.subtitle}
+        </span>
       </span>
     </button>
   );
@@ -96,14 +134,14 @@ function LibraryCard({
 function SortableRow({
   step,
   indexLabel,
-  meta,
+  bgEmoji,
   onSelect,
   onToggle,
   onRemove,
 }: {
   step: FlowOptionalStep;
   indexLabel: number;
-  meta: (typeof LIBRARY_BLOCKS)[number];
+  bgEmoji: string;
   onSelect: () => void;
   onToggle: () => void;
   onRemove: () => void;
@@ -115,67 +153,126 @@ function SortableRow({
   return (
     <div ref={setNodeRef} style={style} className={cn("relative", isDragging && "z-10 opacity-80")}>
       <div
-        className="flex items-stretch gap-2 rounded-xl border border-dashed border-slate-200 bg-white p-3 shadow-sm"
+        className={cn(
+          "flex items-center gap-3 py-3 pl-4 pr-4 transition-colors",
+          !step.enabled && "opacity-[0.45]",
+        )}
+        style={{
+          border: "0.5px dashed var(--color-border-tertiary)",
+          borderRadius: "var(--border-radius-md)",
+          background: "var(--color-background-primary)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = "var(--color-border-secondary)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = "var(--color-border-tertiary)";
+        }}
         {...attributes}
       >
         <button
           type="button"
-          className="mt-1 cursor-grab touch-none text-muted hover:text-slate-900"
+          className="cursor-grab touch-none p-0.5"
+          style={{ fontSize: 14, color: "var(--color-text-secondary)" }}
           aria-label="Verslepen"
           {...listeners}
         >
           ⋮⋮
         </button>
-        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-sm font-semibold text-slate-600 ring-1 ring-slate-200">
-            {indexLabel}
-          </span>
-          <span
-            className={cn(
-              "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg ring-1 ring-inset",
-              meta.chipClass,
-            )}
-            aria-hidden
+        <span
+          className="flex h-[22px] w-[22px] shrink-0 items-center justify-center font-medium"
+          style={{
+            fontSize: 11,
+            borderRadius: "50%",
+            background: "var(--color-background-secondary)",
+            color: "var(--color-text-secondary)",
+            ...borderTertiary,
+            borderStyle: "solid",
+          }}
+        >
+          {indexLabel}
+        </span>
+        <span
+          className="flex h-[34px] w-[34px] shrink-0 items-center justify-center text-base"
+          style={{ borderRadius: 8, background: bgEmoji }}
+          aria-hidden
+        >
+          {LIBRARY_BLOCKS.find((b) => b.kind === step.kind)?.emoji}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-medium leading-tight" style={{ fontSize: 14, color: "var(--color-text-primary)" }}>
+            {LIBRARY_BLOCKS.find((b) => b.kind === step.kind)?.naam}
+          </p>
+          <p className="mt-0.5 leading-snug" style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+            {LIBRARY_BLOCKS.find((b) => b.kind === step.kind)?.subtitle}
+          </p>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={step.enabled}
+            data-state={step.enabled ? "on" : "off"}
+            className="flow-toggle"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+          />
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect();
+            }}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 6,
+              ...borderTertiary,
+              background: "transparent",
+              color: "var(--color-text-secondary)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--color-background-secondary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+            }}
+            aria-label="Instellingen"
           >
-            {meta.emoji}
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="font-medium text-slate-900">{meta.naam}</p>
-            <p className="text-xs text-muted">{meta.subtitle}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="flex cursor-pointer items-center gap-2 text-xs text-muted">
-              <input
-                type="checkbox"
-                className="rounded border-border"
-                checked={step.enabled}
-                onChange={onToggle}
-              />
-              Actief
-            </label>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect();
-              }}
-              className="rounded-lg border border-border p-1.5 text-muted hover:bg-slate-50"
-              aria-label="Instellingen"
-            >
-              <Pencil className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove();
-              }}
-              className="rounded-lg p-1.5 text-danger hover:bg-red-50"
-              aria-label="Verwijderen"
-            >
-              ✕
-            </button>
-          </div>
+            <Pencil style={{ width: 13, height: 13 }} />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            className="flex items-center justify-center text-[12px] transition-colors"
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 6,
+              ...borderTertiary,
+              background: "transparent",
+              color: "var(--color-text-secondary)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--color-background-danger)";
+              e.currentTarget.style.borderColor = "var(--color-border-danger)";
+              e.currentTarget.style.color = "var(--color-text-danger)";
+            }}
+            onMouseLeave={(e) => {
+              Object.assign(e.currentTarget.style, borderTertiary);
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--color-text-secondary)";
+            }}
+            aria-label="Verwijderen"
+          >
+            ✕
+          </button>
         </div>
       </div>
     </div>
@@ -187,10 +284,16 @@ function DropPlaceholder() {
   return (
     <div
       ref={setNodeRef}
-      className={cn(
-        "rounded-xl border border-dashed px-4 py-6 text-center text-sm text-muted transition",
-        isOver ? "border-primary bg-blue-50/50 text-primary" : "border-slate-300 bg-slate-50/80",
-      )}
+      className="mt-2.5 px-[14px] py-[14px] text-center transition-colors"
+      style={{
+        borderRadius: "var(--border-radius-md)",
+        borderWidth: "1.5px",
+        borderStyle: "dashed",
+        borderColor: isOver ? "var(--color-border-info)" : "var(--color-border-tertiary)",
+        background: isOver ? "var(--color-background-info)" : "transparent",
+        fontSize: 13,
+        color: isOver ? "var(--color-text-info)" : "var(--color-text-secondary)",
+      }}
     >
       Sleep een stap hierheen om toe te voegen
     </div>
@@ -202,43 +305,99 @@ function FixedStepRow({
   emoji,
   name,
   when,
-  barClass,
-  onClick,
+  chipBg,
+  onOpenSettings,
 }: {
   n: number;
   emoji: string;
   name: string;
   when: string;
-  barClass: string;
-  onClick: () => void;
+  chipBg: string;
+  onOpenSettings: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-stretch gap-3 rounded-xl border border-border bg-slate-50/90 p-3 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-100/90"
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onOpenSettings}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpenSettings();
+        }
+      }}
+      className="flex cursor-pointer items-center gap-3 py-3 pl-4 pr-4 transition-colors"
+      style={{
+        ...borderTertiary,
+        borderRadius: "var(--border-radius-md)",
+        background: "var(--color-background-secondary)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "var(--color-border-secondary)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "var(--color-border-tertiary)";
+      }}
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-sm font-semibold text-slate-600 ring-1 ring-slate-200">
+      <span
+        className="flex h-[22px] w-[22px] shrink-0 items-center justify-center font-medium"
+        style={{
+          fontSize: 11,
+          borderRadius: "50%",
+          background: "var(--color-background-warning)",
+          color: "var(--color-text-warning)",
+        }}
+      >
         {n}
       </span>
       <span
-        className={cn(
-          "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg text-white shadow-inner",
-          barClass,
-        )}
+        className="flex h-[34px] w-[34px] shrink-0 items-center justify-center text-base"
+        style={{ borderRadius: 8, background: chipBg }}
         aria-hidden
       >
         {emoji}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-medium text-slate-900">{name}</span>
-        <span className="mt-0.5 block text-xs text-muted">{when}</span>
+        <span className="block font-medium leading-tight" style={{ fontSize: 14, color: "var(--color-text-primary)" }}>
+          {name}
+        </span>
+        <span className="mt-0.5 block leading-snug" style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+          {when}
+        </span>
       </span>
-      <span className="flex shrink-0 items-center gap-2 self-center">
-        <Lock className="h-4 w-4 text-warning" aria-hidden />
-        <StatusBadge status="vast" />
-      </span>
-    </button>
+      <div className="ml-auto flex items-center gap-1.5">
+        <Lock style={{ width: 14, height: 14, color: "var(--color-text-secondary)" }} aria-hidden />
+        <span className="whitespace-nowrap" style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>
+          vast
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenSettings();
+          }}
+          className="flex items-center justify-center transition-colors"
+          style={{
+            width: 26,
+            height: 26,
+            borderRadius: 6,
+            ...borderTertiary,
+            background: "transparent",
+            color: "var(--color-text-secondary)",
+            fontSize: 13,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--color-background-secondary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+          }}
+          aria-label="Instellingen"
+        >
+          <Pencil style={{ width: 13, height: 13 }} />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -375,195 +534,243 @@ export function AutomatiseringFlowBuilder() {
   }
 
   if (loading) {
-    return <p className="text-sm text-muted">Flow laden…</p>;
+    return (
+      <p className="text-[13px]" style={{ color: "var(--color-text-secondary)" }}>
+        Flow laden…
+      </p>
+    );
   }
 
   return (
     <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={(e) => setActiveDrag(String(e.active.id))}
-        onDragEnd={onDragEnd}
-      >
-        <div className="flex min-h-[560px] flex-col gap-4 lg:flex-row lg:gap-0">
-          {/* Library */}
-          <aside className="w-full shrink-0 border-border pt-2 lg:w-[220px] lg:border-r lg:pt-0 lg:pr-4">
-            <h3 className="mb-3 font-serif text-sm font-semibold text-slate-800">Beschikbare stappen</h3>
-            <div className="flex max-h-[min(420px,50vh)] flex-col gap-2 overflow-y-auto lg:max-h-[calc(100vh-12rem)]">
-              {LIBRARY_BLOCKS.map((b) => (
-                <LibraryCard key={b.kind} block={b} disabled={usedKinds.has(b.kind)} />
-              ))}
-            </div>
-          </aside>
-
-          {/* Canvas */}
-          <div className="min-w-0 flex-1 border-border pt-2 lg:border-r lg:px-4 lg:pt-0">
-            <h3 className="mb-3 font-serif text-sm font-semibold text-slate-800">Jouw flow</h3>
-            <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
-              <FixedStepRow
-                n={1}
-                emoji="🎯"
-                name="Trigger"
-                when="Campagne gestart of vacature aangemaakt"
-                barClass="bg-blue-600"
-                onClick={() => selectFixed("trigger")}
-              />
-              <Connector />
-              <FixedStepRow
-                n={2}
-                emoji="📞"
-                name="AI belt kandidaten"
-                when="Automatisch screenen in het Nederlands"
-                barClass="bg-success"
-                onClick={() => selectFixed("ai_bellen")}
-              />
-              <Connector />
-              <FixedStepRow
-                n={3}
-                emoji="💬"
-                name="WhatsApp bevestiging"
-                when="Jobinfo automatisch na plaatsing"
-                barClass="bg-violet-600"
-                onClick={() => selectFixed("whatsapp")}
-              />
-
-              <div className="relative my-6 flex items-center gap-3">
-                <div className="h-px flex-1 bg-border" />
-                <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted">
-                  Optionele stappen
-                </span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-
-              <SortableContext items={flow.map((f) => f.id)} strategy={verticalListSortingStrategy}>
-                <div className="space-y-0">
-                  {flow.map((step, i) => {
-                    const meta = LIBRARY_BLOCKS.find((b) => b.kind === step.kind);
-                    if (!meta) return null;
-                    return (
-                      <div key={step.id}>
-                        {i > 0 ? <DashedConnector /> : null}
-                        <SortableRow
-                          step={step}
-                          indexLabel={4 + i}
-                          meta={meta}
-                          onSelect={() => selectOptional(step)}
-                          onToggle={() =>
-                            setFlow((prev) =>
-                              prev.map((r) =>
-                                r.id === step.id ? { ...r, enabled: !r.enabled } : r,
-                              ),
-                            )
-                          }
-                          onRemove={() => {
-                            setFlow((prev) => prev.filter((r) => r.id !== step.id));
-                            setSettings((s) => {
-                              const n = { ...s };
-                              delete n[step.id];
-                              return n;
-                            });
-                            if (selection?.t === "optional" && selection.stepId === step.id) {
-                              setPanelOpen(false);
-                              setSelection(null);
-                            }
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </SortableContext>
-
-              {flow.length > 0 ? <DashedConnector /> : null}
-              <div className="mt-2">
-                <DropPlaceholder />
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-muted">
-                  {actief} van {totalStappen} stappen actief
-                </p>
-                <button
-                  type="button"
-                  disabled={saveLoading}
-                  onClick={saveAll}
-                  className="rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white disabled:opacity-60"
-                >
-                  Opslaan
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Settings — desktop */}
-          <div
-            className={cn(
-              "hidden w-[280px] shrink-0 overflow-hidden transition-[max-width,opacity] duration-200 lg:block",
-              panelOpen ? "max-w-[280px] opacity-100" : "max-w-0 opacity-0",
-            )}
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={(e) => setActiveDrag(String(e.active.id))}
+      onDragEnd={onDragEnd}
+    >
+      <div className="flex min-h-[560px] flex-col gap-4 lg:flex-row lg:gap-4">
+        <aside
+          className="w-full shrink-0 p-4 lg:w-[220px]"
+          style={{
+            ...borderTertiary,
+            borderRadius: "var(--border-radius-lg)",
+            background: "var(--color-background-secondary)",
+          }}
+        >
+          <h3
+            className="mb-3 font-medium uppercase tracking-[0.08em]"
+            style={{ fontSize: 11, color: "var(--color-text-secondary)" }}
           >
-            {panelOpen && selection ?
-              <div className="h-full min-h-[560px]">
-                <StepSettingsPanel
-                  selection={selection}
-                  settings={settings}
-                  onChangeFixed={changeFixed}
-                  onChangeOptionalFull={changeOptionalFull}
-                  onClose={() => {
-                    setPanelOpen(false);
-                    setSelection(null);
-                  }}
-                />
+            Beschikbare stappen
+          </h3>
+          <div className="flex max-h-[min(420px,50vh)] flex-col gap-2 overflow-y-auto lg:max-h-[calc(100vh-12rem)]">
+            {LIBRARY_BLOCKS.map((b) => (
+              <LibraryCard key={b.kind} block={b} disabled={usedKinds.has(b.kind)} />
+            ))}
+          </div>
+        </aside>
+
+        <div className="min-w-0 flex-1">
+          <h3
+            className="mb-3 font-medium uppercase tracking-[0.08em]"
+            style={{ fontSize: 11, color: "var(--color-text-secondary)" }}
+          >
+            Jouw flow
+          </h3>
+          <div
+            className="p-5"
+            style={{
+              ...borderTertiary,
+              background: "var(--color-background-primary)",
+              borderRadius: "var(--border-radius-lg)",
+            }}
+          >
+            <FixedStepRow
+              n={1}
+              emoji="🎯"
+              name="Trigger"
+              when="Campagne gestart of vacature aangemaakt"
+              chipBg={pastels.trigger}
+              onOpenSettings={() => selectFixed("trigger")}
+            />
+            <Connector />
+            <FixedStepRow
+              n={2}
+              emoji="📞"
+              name="AI belt kandidaten"
+              when="Automatisch screenen in het Nederlands"
+              chipBg={pastels.ai}
+              onOpenSettings={() => selectFixed("ai_bellen")}
+            />
+            <Connector />
+            <FixedStepRow
+              n={3}
+              emoji="💬"
+              name="WhatsApp bevestiging"
+              when="Jobinfo automatisch na plaatsing"
+              chipBg={pastels.whatsapp}
+              onOpenSettings={() => selectFixed("whatsapp")}
+            />
+
+            <div className="flex items-center gap-2" style={{ margin: "14px 0 10px 48px" }}>
+              <span
+                className="shrink-0 font-medium uppercase tracking-wide"
+                style={{ fontSize: 10, color: "var(--color-text-secondary)" }}
+              >
+                Optionele stappen
+              </span>
+              <span className="h-[0.5px] flex-1" style={{ background: "var(--color-border-tertiary)" }} />
+            </div>
+
+            <SortableContext items={flow.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+              <div>
+                {flow.map((step, i) => {
+                  const meta = LIBRARY_BLOCKS.find((b) => b.kind === step.kind);
+                  if (!meta) return null;
+                  return (
+                    <div key={step.id}>
+                      {i > 0 ? <DashedConnector /> : null}
+                      <SortableRow
+                        step={step}
+                        indexLabel={4 + i}
+                        bgEmoji={PASTEL_BY_KIND[step.kind]}
+                        onSelect={() => selectOptional(step)}
+                        onToggle={() =>
+                          setFlow((prev) =>
+                            prev.map((r) => (r.id === step.id ? { ...r, enabled: !r.enabled } : r)),
+                          )
+                        }
+                        onRemove={() => {
+                          setFlow((prev) => prev.filter((r) => r.id !== step.id));
+                          setSettings((s) => {
+                            const n = { ...s };
+                            delete n[step.id];
+                            return n;
+                          });
+                          if (selection?.t === "optional" && selection.stepId === step.id) {
+                            setPanelOpen(false);
+                            setSelection(null);
+                          }
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            : null}
+            </SortableContext>
+
+            {flow.length > 0 ? <DashedConnector /> : null}
+            <DropPlaceholder />
+
+            <div
+              className="mt-5 flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between"
+              style={{ borderTop: "0.5px solid var(--color-border-tertiary)" }}
+            >
+              <p className="text-[13px]" style={{ color: "var(--color-text-secondary)" }}>
+                {actief} van {totalStappen} stappen actief
+              </p>
+              <button
+                type="button"
+                disabled={saveLoading}
+                onClick={saveAll}
+                className="cursor-pointer font-medium disabled:opacity-60"
+                style={{
+                  padding: "8px 20px",
+                  fontSize: 13,
+                  borderRadius: "var(--border-radius-md)",
+                  background: "var(--color-background-info)",
+                  color: "var(--color-text-info)",
+                  ...borderTertiary,
+                  borderColor: "var(--color-border-info)",
+                  borderStyle: "solid",
+                  borderWidth: 0.5,
+                }}
+              >
+                Opslaan
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Mobile bottom sheet */}
         <div
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-border bg-white shadow-2xl transition-transform duration-200 md:hidden",
-            panelOpen ? "translate-y-0" : "translate-y-full pointer-events-none",
+            "hidden shrink-0 overflow-hidden transition-[max-width,opacity] duration-200 lg:block",
+            panelOpen ? "max-w-[260px] opacity-100" : "max-w-0 opacity-0",
           )}
         >
           {panelOpen && selection ?
-            <StepSettingsPanel
-              selection={selection}
-              settings={settings}
-              onChangeFixed={changeFixed}
-              onChangeOptionalFull={changeOptionalFull}
-              onClose={() => {
-                setPanelOpen(false);
-                setSelection(null);
-              }}
-            />
+            <div className="min-h-[560px] w-[260px]">
+              <StepSettingsPanel
+                selection={selection}
+                settings={settings}
+                onChangeFixed={changeFixed}
+                onChangeOptionalFull={changeOptionalFull}
+                onClose={() => {
+                  setPanelOpen(false);
+                  setSelection(null);
+                }}
+              />
+            </div>
           : null}
         </div>
+      </div>
 
-        <DragOverlay>
-          {activeDrag?.startsWith("lib-") ?
-            (() => {
-              const k = activeDrag.replace("lib-", "") as OptioneelStapKind;
-              const b = LIBRARY_BLOCKS.find((x) => x.kind === k);
-              if (!b) return null;
-              return (
-                <div className="pointer-events-none flex items-start gap-3 rounded-xl border border-border bg-white p-3 text-left text-sm shadow-lg">
-                  <span
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg ring-1 ring-inset",
-                      b.chipClass,
-                    )}
-                  >
-                    {b.emoji}
-                  </span>
-                  <span>
-                    <span className="font-medium">{b.naam}</span>
-                  </span>
-                </div>
-              );
-            })()
-          : null}
-        </DragOverlay>
-      </DndContext>
+      <div
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto transition-transform duration-200 md:hidden",
+          panelOpen ? "translate-y-0" : "pointer-events-none translate-y-full",
+        )}
+        style={{
+          ...borderTertiary,
+          borderBottomWidth: 0,
+          borderRadius: "var(--border-radius-lg) var(--border-radius-lg) 0 0",
+          background: "var(--color-background-primary)",
+        }}
+      >
+        {panelOpen && selection ?
+          <StepSettingsPanel
+            selection={selection}
+            settings={settings}
+            onChangeFixed={changeFixed}
+            onChangeOptionalFull={changeOptionalFull}
+            onClose={() => {
+              setPanelOpen(false);
+              setSelection(null);
+            }}
+          />
+        : null}
+      </div>
+
+      <DragOverlay>
+        {activeDrag?.startsWith("lib-") ?
+          (() => {
+            const k = activeDrag.replace("lib-", "") as OptioneelStapKind;
+            const b = LIBRARY_BLOCKS.find((x) => x.kind === k);
+            if (!b) return null;
+            return (
+              <div
+                className="pointer-events-none flex items-center gap-2.5 py-2.5 pl-3 pr-3 text-left"
+                style={{
+                  ...borderTertiary,
+                  borderRadius: "var(--border-radius-md)",
+                  background: "var(--color-background-primary)",
+                  gap: 10,
+                }}
+              >
+                <span
+                  className="flex h-[28px] w-[28px] shrink-0 items-center justify-center text-[14px]"
+                  style={{ borderRadius: 8, background: PASTEL_BY_KIND[k] }}
+                >
+                  {b.emoji}
+                </span>
+                <span className="font-medium" style={{ fontSize: 13, color: "var(--color-text-primary)" }}>
+                  {b.naam}
+                </span>
+              </div>
+            );
+          })()
+        : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
