@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Zap } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { Bureau, Profile } from "@/lib/types";
 import { APP_NAV } from "@/lib/nav";
@@ -25,12 +24,6 @@ export function Sidebar({
   profile: Profile;
 }) {
   const pathname = usePathname();
-  const supabase = createClient();
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    window.location.href = "/login";
-  }
 
   const credits = bureau.credits_resterend;
   const creditsBarPct = Math.min(100, (credits / 200) * 100);
@@ -105,13 +98,6 @@ export function Sidebar({
             {profile.volledige_naam}
           </p>
         )}
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="w-full rounded-[7px] border border-[rgba(255,255,255,0.12)] bg-transparent py-2 text-center text-[13px] font-medium text-[rgba(255,255,255,0.85)] transition-colors hover:bg-[rgba(255,255,255,0.06)]"
-        >
-          Uitloggen
-        </button>
       </div>
     </aside>
   );
