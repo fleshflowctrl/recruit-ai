@@ -39,20 +39,22 @@ export function WhatsAppPanel({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
-      <h2 className="font-serif text-lg text-slate-900">WhatsApp</h2>
+    <div className="panel-cream p-6 shadow-none">
+      <h2 className="text-[15px] font-medium text-[color:var(--cream-text)]">
+        WhatsApp
+      </h2>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Typ een bericht…"
         rows={3}
-        className="mt-3 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+        className="input-cream mt-3 text-sm"
       />
       <button
         type="button"
         onClick={send}
         disabled={loading || !text.trim()}
-        className="mt-2 rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="btn-cream-primary mt-2 disabled:opacity-50"
       >
         {loading ? "Verzenden…" : "Verstuur via WhatsApp"}
       </button>

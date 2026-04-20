@@ -7,11 +7,20 @@ export function ToasterProvider() {
     <Toaster
       position="top-right"
       toastOptions={{
-        className: "text-sm",
+        className: "text-[13px]",
         duration: 4000,
-        style: { background: "#fff", color: "#0f172a" },
-        success: { iconTheme: { primary: "#16a34a", secondary: "#fff" } },
-        error: { iconTheme: { primary: "#dc2626", secondary: "#fff" } },
+        style: {
+          background: "var(--cream-text)",
+          color: "var(--cream-bg)",
+          borderRadius: "8px",
+          boxShadow: "none",
+        },
+        success: {
+          iconTheme: { primary: "var(--cream-bg)", secondary: "#1A5C2A" },
+        },
+        error: {
+          iconTheme: { primary: "var(--cream-bg)", secondary: "#F5D9D9" },
+        },
       }}
     />
   );

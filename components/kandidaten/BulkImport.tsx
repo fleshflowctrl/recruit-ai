@@ -100,7 +100,7 @@ export function BulkImport({ bureauId }: { bureauId: string }) {
           <button
             type="button"
             onClick={importRows}
-            className="mt-4 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white"
+            className="btn-cream-primary mt-4"
           >
             Importeer
           </button>

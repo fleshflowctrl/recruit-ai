@@ -60,7 +60,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
           name="naam"
           required
           defaultValue={kandidaat.naam}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -69,7 +69,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
           name="telefoon"
           required
           defaultValue={kandidaat.telefoon}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -78,7 +78,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
           name="email"
           type="email"
           defaultValue={kandidaat.email ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
         <select
           name="status"
           defaultValue={kandidaat.status}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         >
           <option value="actief">Actief</option>
           <option value="inactief">Inactief</option>
@@ -112,7 +112,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
           name="beschikbaar_per"
           type="date"
           defaultValue={kandidaat.beschikbaar_per ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -124,7 +124,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
             name="salariswens_min"
             type="number"
             defaultValue={kandidaat.salariswens_min ?? ""}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
         <div>
@@ -135,7 +135,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
             name="salariswens_max"
             type="number"
             defaultValue={kandidaat.salariswens_max ?? ""}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
       </div>
@@ -144,7 +144,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
         <input
           name="sectoren"
           defaultValue={(kandidaat.sectoren ?? []).join(", ")}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -152,7 +152,7 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
         <input
           name="skills"
           defaultValue={(kandidaat.skills ?? []).join(", ")}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -161,14 +161,14 @@ export function KandidaatEditForm({ kandidaat }: { kandidaat: Kandidaat }) {
           name="notities"
           rows={3}
           defaultValue={kandidaat.notities ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       {error && <p className="text-sm text-danger">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="btn-cream-primary disabled:opacity-50"
       >
         {loading ? "Opslaan…" : "Opslaan"}
       </button>

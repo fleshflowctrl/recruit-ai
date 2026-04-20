@@ -71,7 +71,7 @@ export function VacatureForm({
         <select
           name="opdrachtgever_id"
           defaultValue={String(initial?.opdrachtgever_id ?? "")}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         >
           <option value="">—</option>
           {opdrachtgevers.map((o) => (
@@ -87,7 +87,7 @@ export function VacatureForm({
           name="titel"
           required
           defaultValue={String(initial?.titel ?? "")}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -96,7 +96,7 @@ export function VacatureForm({
           name="omschrijving"
           rows={4}
           defaultValue={String(initial?.omschrijving ?? "")}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -105,7 +105,7 @@ export function VacatureForm({
           <input
             name="locatie"
             defaultValue={String(initial?.locatie ?? "")}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
         <div>
@@ -113,7 +113,7 @@ export function VacatureForm({
           <input
             name="sector"
             defaultValue={String(initial?.sector ?? "")}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
       </div>
@@ -124,7 +124,7 @@ export function VacatureForm({
             name="uren_per_week"
             type="number"
             defaultValue={initial?.uren_per_week != null ? String(initial.uren_per_week) : ""}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
         <div>
@@ -133,7 +133,7 @@ export function VacatureForm({
             name="salaris_min"
             type="number"
             defaultValue={initial?.salaris_min != null ? String(initial.salaris_min) : ""}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
         <div>
@@ -142,7 +142,7 @@ export function VacatureForm({
             name="salaris_max"
             type="number"
             defaultValue={initial?.salaris_max != null ? String(initial.salaris_max) : ""}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
       </div>
@@ -152,7 +152,7 @@ export function VacatureForm({
           name="eisen"
           rows={3}
           defaultValue={Array.isArray(initial?.eisen) ? (initial?.eisen as string[]).join("\n") : ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 font-mono text-sm"
+          className="input-cream mt-1 font-mono text-sm"
         />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -161,7 +161,7 @@ export function VacatureForm({
           <select
             name="status"
             defaultValue={String(initial?.status ?? "open")}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           >
             <option value="open">Open</option>
             <option value="gesloten">Gesloten</option>
@@ -175,7 +175,7 @@ export function VacatureForm({
             type="number"
             min={1}
             defaultValue={String(initial?.aantal_gezocht ?? 1)}
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
       </div>
@@ -183,7 +183,7 @@ export function VacatureForm({
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-primary px-4 py-2 text-sm text-white disabled:opacity-50"
+        className="btn-cream-primary disabled:opacity-50"
       >
         {loading ? "Opslaan…" : "Opslaan"}
       </button>

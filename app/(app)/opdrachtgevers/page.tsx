@@ -24,7 +24,7 @@ export default async function OpdrachtgeversPage() {
         actions={
           <Link
             href="/opdrachtgevers/nieuw"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white"
+            className="btn-cream-primary"
           >
             + Toevoegen
           </Link>
@@ -37,7 +37,7 @@ export default async function OpdrachtgeversPage() {
           action={
             <Link
               href="/opdrachtgevers/nieuw"
-              className="rounded-xl bg-primary px-4 py-2 text-sm text-white"
+              className="btn-cream-primary"
             >
               Opdrachtgever toevoegen
             </Link>

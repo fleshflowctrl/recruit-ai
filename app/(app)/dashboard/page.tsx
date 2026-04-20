@@ -1,4 +1,3 @@
-import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { StatCard } from "@/components/ui/StatCard";
 import { DataTable, Th, Td } from "@/components/ui/DataTable";
@@ -85,21 +84,24 @@ export default async function DashboardPage() {
     bureauCredits?.credits_resterend ?? ctx.bureau.credits_resterend;
 
   const datumLabel = format(new Date(), "EEEE d MMMM yyyy", { locale: nl });
+  const datumCap =
+    datumLabel.charAt(0).toUpperCase() + datumLabel.slice(1);
 
   return (
-    <PageWrapper>
-      <Header
-        title={`Goedemorgen, ${ctx.bureau.naam}`}
-        subtitle={datumLabel.charAt(0).toUpperCase() + datumLabel.slice(1)}
-        actions={
-          <Link
-            href="/campagnes/nieuw"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Nieuwe campagne
-          </Link>
-        }
-      />
+    <PageWrapper className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-[26px] font-medium text-[color:var(--cream-text)]">
+            Goedemorgen, {ctx.bureau.naam}
+          </h1>
+          <p className="mt-1 text-[13px] text-[color:var(--cream-muted)]">
+            {datumCap}
+          </p>
+        </div>
+        <Link href="/campagnes/nieuw" className="btn-cream-primary shrink-0">
+          Nieuwe campagne
+        </Link>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
         <StatCard
@@ -134,15 +136,15 @@ export default async function DashboardPage() {
         />
       </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-5">
+      <div className="grid gap-8 lg:grid-cols-5">
         <section className="lg:col-span-3">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-serif text-xl text-slate-900">
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <h2 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--cream-faint)]">
               Recente campagnes
             </h2>
             <Link
               href="/campagnes/nieuw"
-              className="text-sm font-medium text-primary hover:underline"
+              className="text-[13px] font-medium text-[color:var(--cream-text)] underline-offset-2 hover:underline"
             >
               Nieuwe campagne
             </Link>
@@ -165,7 +167,7 @@ export default async function DashboardPage() {
                     <Td>
                       <Link
                         href={`/campagnes/${c.id}`}
-                        className="font-medium text-primary hover:underline"
+                        className="font-medium text-[color:var(--cream-text)] hover:underline"
                       >
                         {c.naam}
                       </Link>
@@ -181,7 +183,7 @@ export default async function DashboardPage() {
                     <Td>
                       <StatusBadge status={c.status} />
                     </Td>
-                    <Td className="whitespace-nowrap text-muted">
+                    <Td className="whitespace-nowrap text-[color:var(--cream-muted)]">
                       {format(new Date(c.aangemaakt_op), "d MMM yyyy", {
                         locale: nl,
                       })}
@@ -194,32 +196,21 @@ export default async function DashboardPage() {
         </section>
 
         <section className="lg:col-span-2">
-          <h2 className="mb-4 font-serif text-xl text-slate-900">
+          <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--cream-faint)]">
             Recente activiteit
           </h2>
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
-            <ActivityFeed bureauId={bureauId} />
-          </div>
+          <ActivityFeed bureauId={bureauId} />
         </section>
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link
-          href="/campagnes/nieuw"
-          className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
-        >
+      <div className="flex flex-wrap gap-3 border-t border-[color:var(--cream-border)] pt-6">
+        <Link href="/campagnes/nieuw" className="btn-cream-secondary">
           + Nieuwe campagne
         </Link>
-        <Link
-          href="/kandidaten/nieuw"
-          className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
-        >
+        <Link href="/kandidaten/nieuw" className="btn-cream-secondary">
           + Kandidaat toevoegen
         </Link>
-        <Link
-          href="/vacatures/nieuw"
-          className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
-        >
+        <Link href="/vacatures/nieuw" className="btn-cream-secondary">
           + Vacature aanmaken
         </Link>
       </div>

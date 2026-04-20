@@ -35,7 +35,7 @@ export function CampagneActions({ campagneId }: { campagneId: string }) {
             toast("Campagne gepauzeerd."),
           )
         }
-        className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-slate-50"
+        className="btn-cream-secondary text-sm"
       >
         Pauzeren
       </button>
@@ -47,7 +47,7 @@ export function CampagneActions({ campagneId }: { campagneId: string }) {
             toast.success("Campagne hervat."),
           )
         }
-        className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-slate-50"
+        className="btn-cream-secondary text-sm"
       >
         Hervatten
       </button>
@@ -59,7 +59,7 @@ export function CampagneActions({ campagneId }: { campagneId: string }) {
             toast.success("Campagne gestopt."),
           )
         }
-        className="rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-danger hover:bg-red-50"
+        className="btn-cream-danger text-sm"
       >
         Stoppen
       </button>

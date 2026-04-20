@@ -157,7 +157,7 @@ export function GesprekRapportModal({
                 type="date"
                 value={startdatum}
                 onChange={(e) => setStartdatum(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+                className="input-cream mt-1 text-sm"
               />
             </label>
             <label className="text-sm">
@@ -166,7 +166,7 @@ export function GesprekRapportModal({
                 type="time"
                 value={starttijd}
                 onChange={(e) => setStarttijd(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+                className="input-cream mt-1 text-sm"
               />
             </label>
           </div>
@@ -175,7 +175,7 @@ export function GesprekRapportModal({
             <input
               value={adres}
               onChange={(e) => setAdres(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <label className="block text-sm">
@@ -183,7 +183,7 @@ export function GesprekRapportModal({
             <input
               value={contactpersoon}
               onChange={(e) => setContactpersoon(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <label className="block text-sm">
@@ -191,7 +191,7 @@ export function GesprekRapportModal({
             <input
               value={contactTelefoon}
               onChange={(e) => setContactTelefoon(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <label className="block text-sm">
@@ -200,7 +200,7 @@ export function GesprekRapportModal({
               value={meeNemen}
               onChange={(e) => setMeeNemen(e.target.value)}
               placeholder="Bijv. ID-kaart, werkschoenen…"
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <div className="flex flex-wrap gap-2 border-t border-border pt-4">
@@ -208,7 +208,7 @@ export function GesprekRapportModal({
               type="button"
               disabled={plaatsingBusy}
               onClick={() => setStep("rapport")}
-              className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-slate-50 disabled:opacity-50"
+              className="btn-cream-secondary text-sm disabled:opacity-50"
             >
               Terug
             </button>
@@ -216,7 +216,7 @@ export function GesprekRapportModal({
               type="button"
               disabled={plaatsingBusy || !startdatum.trim()}
               onClick={bevestigPlaatsing}
-              className="rounded-xl bg-success px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+              className="btn-cream-primary disabled:opacity-50"
             >
               {plaatsingBusy ? "Bezig…" : "Bevestigen"}
             </button>
@@ -256,7 +256,7 @@ export function GesprekRapportModal({
               {Object.entries(antwoorden).map(([qk, v]) => (
                 <div
                   key={qk}
-                  className="rounded-xl border border-border bg-slate-50 p-3 text-sm"
+                  className="rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] p-3 text-sm"
                 >
                   <p className="text-muted">{qk}</p>
                   <p className="text-slate-900">{String(v)}</p>
@@ -291,7 +291,7 @@ export function GesprekRapportModal({
           </section>
 
           {g.transcript && (
-            <details className="mt-4 rounded-xl border border-border bg-slate-50/80">
+            <details className="mt-4 rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-surface)]">
               <summary className="cursor-pointer px-3 py-2 text-sm font-medium text-primary">
                 Transcript tonen
               </summary>
@@ -305,14 +305,14 @@ export function GesprekRapportModal({
             <button
               type="button"
               onClick={openPlaatsingStap}
-              className="rounded-xl bg-success px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+              className="btn-cream-primary"
             >
               Bevestig plaatsing
             </button>
             <button
               type="button"
               onClick={nietGeschikt}
-              className="rounded-xl bg-danger px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+              className="btn-cream-danger"
             >
               Niet geschikt
             </button>

@@ -96,7 +96,7 @@ export default async function KandidaatDetailPage({
 
       <div className="grid gap-8 lg:grid-cols-5">
         <div className="space-y-8 lg:col-span-3">
-          <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <section className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">Profiel</h2>
             <dl className="mt-4 grid gap-2 text-sm">
               <div>
@@ -117,7 +117,7 @@ export default async function KandidaatDetailPage({
                   {(k.sectoren ?? []).map((s: string) => (
                     <span
                       key={s}
-                      className="rounded-full bg-slate-100 px-2 py-0.5 text-xs"
+                      className="rounded-full bg-[color:var(--cream-surface)] px-2 py-0.5 text-xs text-[color:var(--cream-muted)]"
                     >
                       {s}
                     </span>
@@ -143,7 +143,7 @@ export default async function KandidaatDetailPage({
             <NotitiesForm kandidaatId={k.id} initial={k.notities ?? ""} />
           </section>
 
-          <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <section className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">Score-geschiedenis</h2>
             <ul className="mt-3 space-y-2 text-sm">
               {scoresMetDatum.length === 0 && (
@@ -166,7 +166,7 @@ export default async function KandidaatDetailPage({
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <section className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">Gesprekken</h2>
             <ul className="mt-4 space-y-3">
               {(gesprekken ?? []).length === 0 && (
@@ -194,7 +194,7 @@ export default async function KandidaatDetailPage({
                         <summary className="cursor-pointer text-primary">
                           Transcript
                         </summary>
-                        <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-50 p-2 font-mono text-xs">
+                        <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-[color:var(--cream-surface)] p-2 font-mono text-xs text-[color:var(--cream-text)]">
                           {g.transcript}
                         </pre>
                       </details>
@@ -207,7 +207,7 @@ export default async function KandidaatDetailPage({
         </div>
 
         <div className="space-y-6 lg:col-span-2">
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <div className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">Snelle acties</h2>
             <div className="mt-4 space-y-3">
               <KandidaatActies
@@ -216,20 +216,20 @@ export default async function KandidaatDetailPage({
               />
               <Link
                 href={`/berichten?kandidaat=${k.id}`}
-                className="block w-full rounded-xl border border-border py-2 text-center text-sm font-medium hover:bg-slate-50"
+                className="btn-cream-secondary block w-full py-2 text-center text-sm"
               >
                 WhatsApp sturen
               </Link>
               <Link
                 href={`/kandidaten/${k.id}/bewerken`}
-                className="block w-full rounded-xl border border-border py-2 text-center text-sm font-medium text-slate-800 hover:bg-slate-50"
+                className="btn-cream-secondary block w-full py-2 text-center text-sm"
               >
                 Bewerken
               </Link>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <div className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">Statistieken</h2>
             <ul className="mt-3 space-y-2 text-sm">
               <li>Aantal gesprekken: {gesprekken?.length ?? 0}</li>
@@ -242,7 +242,7 @@ export default async function KandidaatDetailPage({
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <div className="panel-cream p-6 shadow-none">
             <h2 className="font-serif text-lg text-slate-900">
               WhatsApp-geschiedenis
             </h2>
@@ -253,7 +253,7 @@ export default async function KandidaatDetailPage({
                   className={`rounded-lg p-2 ${
                     b.richting === "inbound"
                       ? "ml-4 bg-green-50 text-slate-800"
-                      : "mr-4 bg-slate-100 text-slate-800"
+                      : "mr-4 bg-[color:var(--cream-surface)] text-[color:var(--cream-text)]"
                   }`}
                 >
                   <span className="text-xs text-muted">

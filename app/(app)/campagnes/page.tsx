@@ -48,10 +48,7 @@ export default async function CampagnesPage({
       <Header
         title="Campagnes"
         actions={
-          <Link
-            href="/campagnes/nieuw"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white"
-          >
+          <Link href="/campagnes/nieuw" className="btn-cream-primary">
             Nieuwe campagne
           </Link>
         }
@@ -77,7 +74,7 @@ export default async function CampagnesPage({
           title="Nog geen campagnes. Start uw eerste screening."
           description="Koppel een vacature en selecteer kandidaten om te bellen."
           action={
-            <Link href="/campagnes/nieuw" className="rounded-xl bg-primary px-4 py-2 text-sm text-white">
+            <Link href="/campagnes/nieuw" className="btn-cream-primary">
               Nieuwe campagne
             </Link>
           }
@@ -103,7 +100,7 @@ export default async function CampagnesPage({
                 <Td>
                   <Link
                     href={`/campagnes/${c.id}`}
-                    className="font-medium text-primary hover:underline"
+                    className="font-medium text-[color:var(--cream-text)] hover:underline"
                   >
                     {c.naam}
                   </Link>
@@ -153,8 +150,8 @@ function Tab({
       href={href}
       className={
         active ?
-          "rounded-full bg-primary px-3 py-1 text-white"
-        : "rounded-full border border-border px-3 py-1 hover:bg-slate-50"
+          "rounded-full bg-[color:var(--cream-text)] px-3 py-1 text-[color:var(--cream-bg)] text-xs font-medium"
+        : "rounded-full border border-[color:var(--cream-border-md)] bg-transparent px-3 py-1 text-xs font-medium text-[color:var(--cream-muted)] hover:bg-[color:var(--cream-surface)]"
       }
     >
       {children}

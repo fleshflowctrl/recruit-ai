@@ -1,32 +1,21 @@
-import { cn } from "@/lib/utils";
-
-const accentMap = {
-  blue: "border-l-primary text-primary",
-  cyan: "border-l-accent text-accent",
-  green: "border-l-success text-success",
-  orange: "border-l-warning text-warning",
-  grey: "border-l-muted text-muted",
-} as const;
-
 export function StatCard({
   label,
   value,
-  accent = "blue",
+  accent: _accent = "blue",
 }: {
   label: string;
   value: React.ReactNode;
-  accent?: keyof typeof accentMap;
+  accent?: "blue" | "cyan" | "green" | "orange" | "grey";
 }) {
+  void _accent;
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-border bg-white p-6 shadow-sm",
-        "border-l-4",
-        accentMap[accent],
-      )}
-    >
-      <p className="text-sm font-medium text-muted">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-slate-900">{value}</p>
+    <div className="rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] p-4">
+      <p className="font-mono text-2xl font-medium leading-tight text-[color:var(--cream-text)]">
+        {value}
+      </p>
+      <p className="mt-1 text-xs leading-snug text-[color:var(--cream-muted)]">
+        {label}
+      </p>
     </div>
   );
 }

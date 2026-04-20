@@ -11,11 +11,11 @@ export function DataTable({
   return (
     <div
       className={cn(
-        "overflow-x-auto rounded-2xl border border-border bg-white shadow-sm",
+        "table-cream-wrap overflow-x-auto shadow-none",
         className,
       )}
     >
-      <table className="min-w-full divide-y divide-border text-left text-sm">
+      <table className="min-w-full border-collapse text-left text-sm">
         {children}
       </table>
     </div>
@@ -32,7 +32,7 @@ export function Th({
   return (
     <th
       className={cn(
-        "whitespace-nowrap bg-slate-50 px-4 py-3 font-medium text-slate-700",
+        "whitespace-nowrap border-b border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] px-4 py-2.5 text-[11px] font-medium uppercase tracking-wider text-[color:var(--cream-faint)]",
         className,
       )}
     >
@@ -52,7 +52,10 @@ export function Td({
 }) {
   return (
     <td
-      className={cn("border-t border-border px-4 py-3 text-slate-800", className)}
+      className={cn(
+        "border-b border-[color:var(--cream-border)] px-4 py-3 text-[color:var(--cream-text)]",
+        className,
+      )}
       onClick={onClick}
     >
       {children}

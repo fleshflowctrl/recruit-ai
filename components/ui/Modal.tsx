@@ -42,12 +42,14 @@ export function Modal({
       />
       <div
         className={cn(
-          "relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl",
+          "relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[12px] border border-[color:var(--cream-border-md)] bg-[color:var(--cream-bg)] p-6 shadow-none",
           className,
         )}
       >
         {title && (
-          <h2 className="font-serif text-xl text-slate-900">{title}</h2>
+          <h2 className="text-lg font-medium text-[color:var(--cream-text)]">
+            {title}
+          </h2>
         )}
         <div className={title ? "mt-4" : ""}>{children}</div>
       </div>

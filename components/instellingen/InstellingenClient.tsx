@@ -95,63 +95,71 @@ export function InstellingenClient({
 
   return (
     <>
-      <section className="mb-10 rounded-2xl border border-border bg-white p-6 shadow-sm">
-        <h2 className="font-serif text-lg">Bureau profiel</h2>
+      <section className="panel-cream mb-10 p-6 shadow-none">
+        <h2 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--cream-faint)]">
+          Bureau profiel
+        </h2>
         <div className="mt-4 grid max-w-lg gap-3">
           <label className="block text-sm">
-            <span className="text-muted">Naam</span>
+            <span className="text-[color:var(--cream-muted)]">Naam</span>
             <input
               value={naam}
               onChange={(e) => setNaam(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <label className="block text-sm">
-            <span className="text-muted">E-mail</span>
+            <span className="text-[color:var(--cream-muted)]">E-mail</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <label className="block text-sm">
-            <span className="text-muted">Telefoon</span>
+            <span className="text-[color:var(--cream-muted)]">Telefoon</span>
             <input
               value={telefoon}
               onChange={(e) => setTelefoon(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              className="input-cream mt-1 text-sm"
             />
           </label>
           <button
             type="button"
             disabled={saving}
             onClick={saveProfiel}
-            className="mt-2 w-fit rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="btn-cream-primary mt-2 w-fit disabled:opacity-50"
           >
             Opslaan
           </button>
         </div>
       </section>
 
-      <section className="mb-10 rounded-2xl border border-border bg-white p-6 shadow-sm">
-        <h2 className="font-serif text-lg">Telnyx nummer</h2>
-        <p className="mt-2 text-2xl font-medium tabular-nums">{telnyxDisplay}</p>
-        <p className="mt-2 text-sm text-success">
+      <section className="panel-cream mb-10 p-6 shadow-none">
+        <h2 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--cream-faint)]">
+          Telnyx nummer
+        </h2>
+        <p className="mt-2 text-2xl font-medium tabular-nums text-[color:var(--cream-text)]">
+          {telnyxDisplay}
+        </p>
+        <p className="mt-2 text-sm text-[color:var(--cream-green-text)]">
           Status: actief (controleer in Telnyx-dashboard)
         </p>
         <button
           type="button"
           onClick={testBel}
-          className="mt-4 rounded-xl border border-border bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
+          className="btn-cream-secondary mt-4"
         >
           Test bel
         </button>
       </section>
 
-      <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
-        <h2 className="font-serif text-lg">Abonnement</h2>
-        <p className="mt-2 text-sm text-muted">
+      <section className="panel-cream p-6 shadow-none">
+        <h2 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--cream-faint)]">
+          Abonnement
+        </h2>
+        <p className="mt-2 text-sm text-[color:var(--cream-muted)]">
           Huidig plan: <strong>{bureau.plan}</strong> — credits:{" "}
           <strong>{bureau.credits_resterend}</strong>
         </p>
@@ -162,20 +170,26 @@ export function InstellingenClient({
             return (
               <div
                 key={p.id}
-                className={`rounded-2xl border p-4 ${
-                  current ? "border-primary bg-blue-50" : "border-border"
-                }`}
+                className={
+                  current
+                    ? "rounded-[10px] border border-[color:var(--cream-border-str)] bg-[color:var(--cream-surface)] p-4"
+                    : "rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-bg)] p-4"
+                }
               >
-                <h3 className="font-semibold">{p.naam}</h3>
-                <p className="text-2xl font-bold">€{p.prijs}/maand</p>
-                <p className="text-sm text-muted">
+                <h3 className="font-semibold text-[color:var(--cream-text)]">
+                  {p.naam}
+                </h3>
+                <p className="text-2xl font-bold text-[color:var(--cream-text)]">
+                  €{p.prijs}/maand
+                </p>
+                <p className="text-sm text-[color:var(--cream-muted)]">
                   {p.calls != null ? `${p.calls} calls` : "Onbeperkt"}
                 </p>
                 <button
                   type="button"
                   disabled={current || !priceId}
                   onClick={() => checkout(priceId)}
-                  className="mt-3 w-full rounded-xl bg-primary py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="btn-cream-primary mt-3 w-full disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {current ? "Huidig plan" : "Upgrade"}
                 </button>

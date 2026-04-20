@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 import { CAMPAGNE_TYPES, DEFAULT_SCREENING_VRAGEN } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { ScreeningVragenEditor } from "./ScreeningVragen";
 
 type KRow = { id: string; naam: string; telefoon: string };
@@ -124,44 +125,60 @@ export function CampagneWizard({
 
   return (
     <div className="max-w-3xl space-y-8">
-      <div className="flex gap-2 text-sm">
-        {[1, 2, 3, 4].map((s) => (
-          <span
-            key={s}
-            className={
-              step === s ?
-                "font-semibold text-primary"
-              : "text-muted"
-            }
-          >
-            Stap {s}
-          </span>
+      <div className="flex w-full max-w-xl items-center">
+        {[1, 2, 3, 4].map((s, idx) => (
+          <div key={s} className="flex flex-1 items-center">
+            <div
+              className={cn(
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-medium",
+                step === s &&
+                  "border-transparent bg-[color:var(--cream-text)] text-[color:var(--cream-bg)]",
+                step > s &&
+                  "border-transparent bg-[color:var(--cream-green)] text-[color:var(--cream-green-text)]",
+                step < s &&
+                  "border border-[color:var(--cream-border-md)] bg-transparent text-[color:var(--cream-faint)]",
+              )}
+            >
+              {s}
+            </div>
+            {idx < 3 && (
+              <div className="mx-1 h-px min-w-[4px] flex-1 bg-[color:var(--cream-border)]" />
+            )}
+          </div>
         ))}
       </div>
+      <p className="text-xs text-[color:var(--cream-muted)]">
+        Stap {step} van 4
+      </p>
 
       {step === 1 && (
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Campagnenaam *</label>
+            <label className="text-sm font-medium text-[color:var(--cream-text)]">
+              Campagnenaam *
+            </label>
             <input
               value={naam}
               onChange={(e) => setNaam(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+              className="input-cream mt-1"
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Type</label>
+            <label className="text-sm font-medium text-[color:var(--cream-text)]">
+              Type
+            </label>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               {CAMPAGNE_TYPES.map((t) => (
                 <button
                   key={t.id}
                   type="button"
                   onClick={() => setType(t.id)}
-                  className={`rounded-xl border px-3 py-2 text-left text-sm ${
+                  className={cn(
+                    "rounded-[7px] border px-3 py-2 text-left text-sm transition-colors",
                     type === t.id ?
-                      "border-primary bg-blue-50"
-                    : "border-border hover:bg-slate-50"
-                  }`}
+                      "border-[color:var(--cream-border-str)] bg-[color:var(--cream-surface)] text-[color:var(--cream-text)]"
+                    : "border-[color:var(--cream-border-md)] bg-transparent text-[color:var(--cream-text)] hover:bg-[color:var(--cream-surface)]",
+                  )}
                 >
                   <span className="mr-2">{t.emoji}</span>
                   {t.label}
@@ -170,11 +187,13 @@ export function CampagneWizard({
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium">Vacature (optioneel)</label>
+            <label className="text-sm font-medium text-[color:var(--cream-text)]">
+              Vacature (optioneel)
+            </label>
             <select
               value={vacatureId}
               onChange={(e) => setVacatureId(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+              className="input-cream mt-1"
             >
               <option value="">—</option>
               {vacatures.map((v) => (
@@ -185,18 +204,20 @@ export function CampagneWizard({
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium">Rapport e-mail</label>
+            <label className="text-sm font-medium text-[color:var(--cream-text)]">
+              Rapport e-mail
+            </label>
             <input
               type="email"
               value={rapportEmail}
               onChange={(e) => setRapportEmail(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+              className="input-cream mt-1"
             />
           </div>
           <button
             type="button"
             onClick={() => setStep(2)}
-            className="rounded-xl bg-primary px-4 py-2 text-sm text-white"
+            className="btn-cream-primary"
           >
             Volgende
           </button>
@@ -206,12 +227,14 @@ export function CampagneWizard({
       {step === 2 && (
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Script / prompt</label>
+            <label className="text-sm font-medium text-[color:var(--cream-text)]">
+              Script / prompt
+            </label>
             <textarea
               value={script || defaultScript}
               onChange={(e) => setScript(e.target.value)}
               rows={6}
-              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 font-mono text-sm"
+              className="input-cream mt-1 font-mono text-sm"
             />
           </div>
           <ScreeningVragenEditor value={vragen} onChange={setVragen} />
@@ -219,14 +242,14 @@ export function CampagneWizard({
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="rounded-xl border border-border px-4 py-2 text-sm"
+              className="btn-cream-secondary"
             >
               Terug
             </button>
             <button
               type="button"
               onClick={() => setStep(3)}
-              className="rounded-xl bg-primary px-4 py-2 text-sm text-white"
+              className="btn-cream-primary"
             >
               Volgende
             </button>
@@ -236,14 +259,15 @@ export function CampagneWizard({
 
       {step === 3 && (
         <div className="space-y-4">
-          <p className="text-sm text-muted">
-            Selecteer kandidaten uit uw database (CSV-upload: plak later of gebruik import bij kandidaten).
+          <p className="text-sm text-[color:var(--cream-muted)]">
+            Selecteer kandidaten uit uw database (CSV-upload: plak later of
+            gebruik import bij kandidaten).
           </p>
-          <div className="max-h-64 overflow-y-auto rounded-xl border border-border">
+          <div className="max-h-64 overflow-y-auto rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-bg)]">
             {kandidaten.map((k) => (
               <label
                 key={k.id}
-                className="flex cursor-pointer items-center gap-2 border-b border-border px-3 py-2 text-sm last:border-0 hover:bg-slate-50"
+                className="flex cursor-pointer items-center gap-2 border-b border-[color:var(--cream-border)] px-3 py-2 text-sm last:border-0 hover:bg-[color:var(--cream-surface)]"
               >
                 <input
                   type="checkbox"
@@ -251,7 +275,9 @@ export function CampagneWizard({
                   onChange={() => toggle(k.id)}
                 />
                 <span>{k.naam}</span>
-                <span className="text-muted">{k.telefoon}</span>
+                <span className="text-[color:var(--cream-muted)]">
+                  {k.telefoon}
+                </span>
               </label>
             ))}
           </div>
@@ -260,14 +286,14 @@ export function CampagneWizard({
             onChange={(e) => setCsvNote(e.target.value)}
             placeholder="CSV preview notities (optioneel)"
             rows={2}
-            className="w-full rounded-xl border border-dashed border-border px-3 py-2 text-sm text-muted"
+            className="input-cream border-dashed text-sm text-[color:var(--cream-muted)]"
             readOnly
           />
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="rounded-xl border border-border px-4 py-2 text-sm"
+              className="btn-cream-secondary"
             >
               Terug
             </button>
@@ -275,7 +301,7 @@ export function CampagneWizard({
               type="button"
               onClick={() => setStep(4)}
               disabled={!totaal}
-              className="rounded-xl bg-primary px-4 py-2 text-sm text-white disabled:opacity-50"
+              className="btn-cream-primary disabled:opacity-50"
             >
               Volgende
             </button>
@@ -284,9 +310,11 @@ export function CampagneWizard({
       )}
 
       {step === 4 && (
-        <div className="space-y-4 rounded-2xl border border-border bg-slate-50 p-6">
-          <h3 className="font-serif text-lg">Samenvatting</h3>
-          <ul className="space-y-1 text-sm">
+        <div className="panel-cream space-y-4 p-6 shadow-none">
+          <h3 className="text-lg font-medium text-[color:var(--cream-text)]">
+            Samenvatting
+          </h3>
+          <ul className="space-y-1 text-sm text-[color:var(--cream-text)]">
             <li>
               <strong>Type:</strong> {type}
             </li>
@@ -307,12 +335,14 @@ export function CampagneWizard({
               <strong>Rapport naar:</strong> {rapportEmail || "—"}
             </li>
           </ul>
-          {error && <p className="text-sm text-danger">{error}</p>}
+          {error && (
+            <p className="text-sm text-[color:var(--cream-red-text)]">{error}</p>
+          )}
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setStep(3)}
-              className="rounded-xl border border-border px-4 py-2 text-sm"
+              className="btn-cream-secondary"
             >
               Terug
             </button>
@@ -320,7 +350,7 @@ export function CampagneWizard({
               type="button"
               onClick={saveConcept}
               disabled={loading || !naam}
-              className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-medium"
+              className="btn-cream-secondary font-medium disabled:opacity-50"
             >
               {loading ? "Bezig…" : "Opslaan als concept"}
             </button>
@@ -328,7 +358,7 @@ export function CampagneWizard({
               type="button"
               onClick={startNow}
               disabled={loading || !naam || !totaal}
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+              className="btn-cream-primary font-medium disabled:opacity-50"
             >
               {loading ? "Bezig…" : "Start screening nu"}
             </button>

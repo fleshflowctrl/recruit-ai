@@ -66,7 +66,7 @@ export function CampagneKandidatenTable({
               return (
                 <tr
                   key={row.campagneKandidaat.id}
-                  className="cursor-pointer hover:bg-slate-50/80"
+                  className="cursor-pointer hover:bg-[color:var(--cream-surface)]"
                   onClick={() => openRapport(row)}
                 >
                   <Td>{k.naam}</Td>

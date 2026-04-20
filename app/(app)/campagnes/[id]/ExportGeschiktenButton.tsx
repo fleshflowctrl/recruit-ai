@@ -27,7 +27,7 @@ export function ExportGeschiktenButton({
     <button
       type="button"
       onClick={run}
-      className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-slate-50"
+      className="btn-cream-secondary text-sm"
     >
       Exporteer geschikten (CSV)
     </button>

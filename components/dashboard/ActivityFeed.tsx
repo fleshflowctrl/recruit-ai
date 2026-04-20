@@ -15,6 +15,15 @@ type Line = {
   at: string;
 };
 
+function activityDotColor(aanbeveling: string | null): string {
+  const k = (aanbeveling ?? "").toLowerCase().replace(/\s+/g, "_");
+  if (k === "geschikt") return "#5C8A5C";
+  if (k === "twijfel") return "#C8A45A";
+  if (k === "niet_geschikt") return "#C05050";
+  if (k === "geen_gehoor") return "var(--cream-faint)";
+  return "var(--cream-faint)";
+}
+
 export function ActivityFeed({ bureauId }: { bureauId: string }) {
   const [lines, setLines] = useState<Line[]>([]);
 
@@ -66,27 +75,35 @@ export function ActivityFeed({ bureauId }: { bureauId: string }) {
   }, [bureauId]);
 
   return (
-    <ul className="space-y-3 text-sm text-slate-700">
+    <ul className="space-y-4 text-sm text-[color:var(--cream-text)]">
       {lines.length === 0 && (
-        <li className="text-muted">Nog geen activiteit.</li>
+        <li className="text-[14px] text-[color:var(--cream-faint)]">
+          Nog geen activiteit.
+        </li>
       )}
       {lines.map((l) => (
-        <li
-          key={l.id}
-          className="rounded-xl border border-border bg-slate-50/80 px-3 py-2"
-        >
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-medium text-slate-900">{l.naam}</span>
-            <ScoreBadge score={l.score} />
-            {l.aanbeveling ? (
-              <StatusBadge status={l.aanbeveling} />
-            ) : (
-              <span className="text-xs text-muted">Geen aanbeveling</span>
-            )}
+        <li key={l.id} className="flex gap-3">
+          <span
+            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{ background: activityDotColor(l.aanbeveling) }}
+            aria-hidden
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="font-medium">{l.naam}</span>
+              <ScoreBadge score={l.score} />
+              {l.aanbeveling ? (
+                <StatusBadge status={l.aanbeveling} />
+              ) : (
+                <span className="text-xs text-[color:var(--cream-muted)]">
+                  Geen aanbeveling
+                </span>
+              )}
+            </div>
+            <span className="mt-0.5 block text-xs text-[color:var(--cream-muted)]">
+              {format(new Date(l.at), "d MMM yyyy HH:mm", { locale: nl })}
+            </span>
           </div>
-          <span className="mt-1 block text-xs text-muted">
-            {format(new Date(l.at), "d MMM yyyy HH:mm", { locale: nl })}
-          </span>
         </li>
       ))}
     </ul>

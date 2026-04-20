@@ -43,7 +43,7 @@ export function KandidaatActies({
         type="button"
         onClick={bel}
         disabled={loading}
-        className="w-full rounded-xl bg-primary py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        className="btn-cream-primary w-full disabled:opacity-50"
       >
         {loading ? "Bezig…" : "Bel nu"}
       </button>

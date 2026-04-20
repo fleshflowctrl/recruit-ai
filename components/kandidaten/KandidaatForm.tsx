@@ -59,28 +59,22 @@ export function KandidaatForm({ bureauId }: { bureauId: string }) {
   return (
     <form onSubmit={onSubmit} className="max-w-xl space-y-4">
       <div>
-        <label className="text-sm font-medium text-slate-700">Naam *</label>
-        <input
-          name="naam"
-          required
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
+          Naam *
+        </label>
+        <input name="naam" required className="input-cream mt-1" />
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">Telefoon *</label>
-        <input
-          name="telefoon"
-          required
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
+          Telefoon *
+        </label>
+        <input name="telefoon" required className="input-cream mt-1" />
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">E-mail</label>
-        <input
-          name="email"
-          type="email"
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
+          E-mail
+        </label>
+        <input name="email" type="email" className="input-cream mt-1" />
       </div>
       <div className="flex items-center gap-2">
         <input id="rijbewijs" name="rijbewijs" type="checkbox" />
@@ -89,68 +83,60 @@ export function KandidaatForm({ bureauId }: { bureauId: string }) {
         </label>
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
           Beschikbaar per
         </label>
         <input
           name="beschikbaar_per"
           type="date"
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium text-[color:var(--cream-text)]">
             Salaris min (€/mnd)
           </label>
           <input
             name="salariswens_min"
             type="number"
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium text-[color:var(--cream-text)]">
             Salaris max (€/mnd)
           </label>
           <input
             name="salariswens_max"
             type="number"
-            className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+            className="input-cream mt-1"
           />
         </div>
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
           Sectoren (komma-gescheiden)
         </label>
-        <input
-          name="sectoren"
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <input name="sectoren" className="input-cream mt-1" />
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
           Skills (komma-gescheiden)
         </label>
-        <input
-          name="skills"
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <input name="skills" className="input-cream mt-1" />
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">Notities</label>
-        <textarea
-          name="notities"
-          rows={3}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
-        />
+        <label className="text-sm font-medium text-[color:var(--cream-text)]">
+          Notities
+        </label>
+        <textarea name="notities" rows={3} className="input-cream mt-1" />
       </div>
       {error && <p className="text-sm text-danger">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="btn-cream-primary disabled:opacity-50"
       >
         {loading ? "Opslaan…" : "Opslaan"}
       </button>

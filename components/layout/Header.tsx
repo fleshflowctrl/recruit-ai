@@ -14,19 +14,23 @@ export function Header({
   return (
     <header
       className={cn(
-        "mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
+        "mb-8 flex min-h-12 flex-col gap-3 border-b border-[color:var(--cream-border)] bg-[var(--cream-bg)] pb-4 sm:flex-row sm:items-center sm:justify-between sm:pb-4 md:px-0",
         className,
       )}
     >
       <div>
-        <h1 className="font-serif text-3xl font-normal tracking-tight text-slate-900">
+        <h1 className="text-[15px] font-medium text-[color:var(--cream-text)]">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-1 text-sm text-muted">{subtitle}</p>
+          <p className="mt-0.5 text-[13px] text-[color:var(--cream-muted)]">
+            {subtitle}
+          </p>
         )}
       </div>
-      {actions && <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>
+      )}
     </header>
   );
 }

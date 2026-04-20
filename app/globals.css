@@ -3,26 +3,57 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #fafaf8;
+  --foreground: #1a1a18;
 
-  /* Flow builder design system */
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f3f4f6;
-  --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
-  --color-text-warning: #b45309;
-  --color-text-info: #1d4ed8;
-  --color-text-danger: #b91c1c;
-  --color-border-tertiary: #e5e7eb;
-  --color-border-secondary: #d1d5db;
-  --color-border-info: #93c5fd;
-  --color-border-danger: #fca5a5;
-  --color-background-warning: #fef3c7;
-  --color-background-info: #eff6ff;
-  --color-background-danger: #fef2f2;
+  --cream-bg: #fafaf8;
+  --cream-surface: #f5f4f0;
+  --cream-raised: #efede8;
+  --cream-border: rgba(0, 0, 0, 0.08);
+  --cream-border-md: rgba(0, 0, 0, 0.13);
+  --cream-border-str: rgba(0, 0, 0, 0.22);
+  --cream-text: #1a1a18;
+  --cream-muted: #8a8a85;
+  --cream-faint: #b0afa9;
+
+  --cream-blue: #d4e4f7;
+  --cream-green: #d4edd8;
+  --cream-yellow: #f5ebc8;
+  --cream-purple: #e8e0f5;
+  --cream-pink: #f5dde0;
+  --cream-orange: #f5e4ce;
+  --cream-red: #f5d9d9;
+
+  --cream-blue-text: #1d4a7a;
+  --cream-green-text: #1a5c2a;
+  --cream-yellow-text: #7a5c10;
+  --cream-red-text: #8b2020;
+
+  --color-background-primary: #fafaf8;
+  --color-background-secondary: #f5f4f0;
+  --color-background-warning: #f5ebc8;
+  --color-background-info: #d4e4f7;
+  --color-background-danger: #f5d9d9;
+  --color-background-success: #d4edd8;
+
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #8a8a85;
+  --color-text-warning: #7a5c10;
+  --color-text-info: #1d4a7a;
+  --color-text-danger: #8b2020;
+  --color-text-success: #1a5c2a;
+
+  --color-border-tertiary: rgba(0, 0, 0, 0.08);
+  --color-border-secondary: rgba(0, 0, 0, 0.13);
+  --color-border-primary: rgba(0, 0, 0, 0.22);
+  --color-border-info: rgba(29, 74, 122, 0.3);
+  --color-border-danger: rgba(139, 32, 32, 0.2);
+  --color-border-warning: rgba(122, 92, 16, 0.2);
+  --color-border-success: rgba(26, 92, 42, 0.2);
+
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
 }
 
 /* Flow builder: dashed vertical connector */
@@ -34,8 +65,8 @@
   margin-bottom: 3px;
   background: repeating-linear-gradient(
     to bottom,
-    var(--color-border-tertiary) 0px,
-    var(--color-border-tertiary) 4px,
+    var(--cream-border-md) 0px,
+    var(--cream-border-md) 4px,
     transparent 4px,
     transparent 7px
   );
@@ -54,11 +85,11 @@
 }
 
 .flow-toggle[data-state="on"] {
-  background: #22c55e;
+  background: #5c8a5c;
 }
 
 .flow-toggle[data-state="off"] {
-  background: var(--color-border-tertiary);
+  background: var(--cream-raised);
 }
 
 .flow-toggle::after {
@@ -81,7 +112,7 @@
   display: block;
   font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--cream-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 5px;
@@ -90,16 +121,16 @@
 .flow-input {
   width: 100%;
   padding: 7px 10px;
-  border: 0.5px solid var(--color-border-tertiary);
   border-radius: var(--border-radius-md);
   font-size: 13px;
-  background: var(--color-background-secondary);
-  color: var(--color-text-primary);
   outline: none;
+  background: var(--cream-surface);
+  border: 1px solid var(--cream-border-md);
+  color: var(--cream-text);
 }
 
 .flow-input:focus {
-  border-color: var(--color-border-info);
+  border-color: var(--cream-border-str);
 }
 
 select.flow-input {
@@ -115,6 +146,103 @@ select.flow-input {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--cream-text);
+  background: var(--cream-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-cream-primary {
+    @apply inline-flex items-center justify-center font-medium transition-opacity duration-150;
+    background: var(--cream-text);
+    color: var(--cream-bg);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+  }
+  .btn-cream-primary:hover {
+    opacity: 0.85;
+  }
+  .btn-cream-primary:disabled {
+    opacity: 0.5;
+  }
+
+  .btn-cream-secondary {
+    @apply inline-flex items-center justify-center font-medium transition-colors duration-150;
+    background: transparent;
+    border: 1px solid var(--cream-border-md);
+    color: var(--cream-text);
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+  }
+  .btn-cream-secondary:hover {
+    background: var(--cream-surface);
+  }
+
+  .btn-cream-danger {
+    @apply inline-flex items-center justify-center font-medium transition-colors duration-150;
+    background: var(--cream-red);
+    border: 1px solid rgba(139, 32, 32, 0.15);
+    color: var(--cream-red-text);
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+  }
+  .btn-cream-danger:hover {
+    background: #f0c8c8;
+  }
+
+  .btn-cream-icon {
+    @apply inline-flex items-center justify-center transition-colors duration-150;
+    background: transparent;
+    border: 1px solid var(--cream-border);
+    border-radius: 6px;
+    padding: 6px;
+    color: var(--cream-muted);
+  }
+  .btn-cream-icon:hover {
+    background: var(--cream-surface);
+    color: var(--cream-text);
+  }
+
+  .input-cream {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--cream-text);
+    background: var(--cream-surface);
+    border: 1px solid var(--cream-border-md);
+    border-radius: 7px;
+    outline: none;
+    transition: border-color 150ms;
+  }
+  .input-cream::placeholder {
+    color: var(--cream-faint);
+  }
+  .input-cream:focus {
+    border-color: var(--cream-border-str);
+  }
+
+  .panel-cream {
+    background: var(--cream-bg);
+    border: 1px solid var(--cream-border);
+    border-radius: 10px;
+  }
+
+  .table-cream-wrap {
+    background: var(--cream-bg);
+    border: 1px solid var(--cream-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table-cream-wrap tbody tr {
+    transition: background 100ms;
+  }
+
+  .table-cream-wrap tbody tr:hover td {
+    background: var(--cream-surface);
+  }
 }

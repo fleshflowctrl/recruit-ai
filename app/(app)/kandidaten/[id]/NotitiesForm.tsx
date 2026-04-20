@@ -40,7 +40,7 @@ export function NotitiesForm({
         type="button"
         onClick={save}
         disabled={saving}
-        className="mt-2 rounded-xl bg-slate-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+        className="btn-cream-primary mt-2 disabled:opacity-50"
       >
         {saving ? "Opslaan…" : "Notities opslaan"}
       </button>

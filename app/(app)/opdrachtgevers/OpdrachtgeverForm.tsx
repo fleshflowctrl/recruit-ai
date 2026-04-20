@@ -55,7 +55,7 @@ export function OpdrachtgeverForm({
           name="naam"
           required
           defaultValue={initial?.naam ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -63,7 +63,7 @@ export function OpdrachtgeverForm({
         <input
           name="contactpersoon"
           defaultValue={initial?.contactpersoon ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -72,7 +72,7 @@ export function OpdrachtgeverForm({
           name="email"
           type="email"
           defaultValue={initial?.email ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -80,7 +80,7 @@ export function OpdrachtgeverForm({
         <input
           name="telefoon"
           defaultValue={initial?.telefoon ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -88,7 +88,7 @@ export function OpdrachtgeverForm({
         <input
           name="adres"
           defaultValue={initial?.adres ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -96,7 +96,7 @@ export function OpdrachtgeverForm({
         <input
           name="sector"
           defaultValue={initial?.sector ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       <div>
@@ -105,14 +105,14 @@ export function OpdrachtgeverForm({
           name="notities"
           rows={3}
           defaultValue={initial?.notities ?? ""}
-          className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2"
+          className="input-cream mt-1"
         />
       </div>
       {error && <p className="text-sm text-danger">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-primary px-4 py-2 text-sm text-white disabled:opacity-50"
+        className="btn-cream-primary disabled:opacity-50"
       >
         {loading ? "Opslaan…" : "Opslaan"}
       </button>

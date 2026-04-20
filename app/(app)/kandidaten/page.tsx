@@ -79,16 +79,10 @@ export default async function KandidatenPage({
         title="Kandidaten"
         actions={
           <>
-            <Link
-              href="/kandidaten/nieuw"
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-            >
+            <Link href="/kandidaten/nieuw" className="btn-cream-primary">
               + Toevoegen
             </Link>
-            <Link
-              href="/kandidaten/import"
-              className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-slate-50"
-            >
+            <Link href="/kandidaten/import" className="btn-cream-secondary">
               Importeer CSV
             </Link>
           </>
@@ -112,10 +106,7 @@ export default async function KandidatenPage({
             : "Voeg handmatig toe of importeer een CSV."
           }
           action={
-            <Link
-              href="/kandidaten/nieuw"
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white"
-            >
+            <Link href="/kandidaten/nieuw" className="btn-cream-primary">
               Kandidaat toevoegen
             </Link>
           }
@@ -150,7 +141,7 @@ export default async function KandidatenPage({
                     <Td>
                       <Link
                         href={`/kandidaten/${k.id}`}
-                        className="font-medium text-primary hover:underline"
+                        className="font-medium text-[color:var(--cream-text)] hover:underline"
                       >
                         {k.naam}
                       </Link>
@@ -167,21 +158,21 @@ export default async function KandidatenPage({
                       <div className="flex flex-wrap gap-2 text-sm">
                         <Link
                           href={`/kandidaten/${k.id}`}
-                          className="text-primary hover:underline"
+                          className="text-[color:var(--cream-text)] hover:underline"
                         >
                           Bekijken
                         </Link>
                         <span className="text-border">|</span>
                         <Link
                           href={`/kandidaten/${k.id}?bel=1`}
-                          className="text-accent hover:underline"
+                          className="text-[color:var(--cream-text)] hover:underline"
                         >
                           Bellen
                         </Link>
                         <span className="text-border">|</span>
                         <Link
                           href={`/kandidaten/${k.id}?whatsapp=1`}
-                          className="text-slate-600 hover:underline"
+                          className="text-[color:var(--cream-muted)] hover:underline"
                         >
                           WhatsApp
                         </Link>
@@ -201,7 +192,7 @@ export default async function KandidatenPage({
               {page > 1 && (
                 <Link
                   href={`/kandidaten?${base}${base ? "&" : ""}page=${page - 1}`}
-                  className="rounded-lg border border-border px-3 py-1 hover:bg-slate-50"
+                  className="btn-cream-secondary px-3 py-1 text-xs"
                 >
                   Vorige
                 </Link>
@@ -209,7 +200,7 @@ export default async function KandidatenPage({
               {page < pages && (
                 <Link
                   href={`/kandidaten?${base}${base ? "&" : ""}page=${page + 1}`}
-                  className="rounded-lg border border-border px-3 py-1 hover:bg-slate-50"
+                  className="btn-cream-secondary px-3 py-1 text-xs"
                 >
                   Volgende
                 </Link>

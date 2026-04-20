@@ -145,7 +145,7 @@ export default async function CampagneDetailPage({
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-border bg-white p-6 text-center shadow-sm">
+        <div className="panel-cream p-6 text-center shadow-none">
           <p className="text-3xl font-semibold text-primary">{pct}%</p>
           <p className="text-sm text-muted">Voortgang</p>
           <div className="mt-4">
@@ -156,7 +156,7 @@ export default async function CampagneDetailPage({
         <StatBox label="Twijfel" value={c.twijfel ?? 0} emoji="⚠️" />
         <StatBox label="Niet geschikt" value={c.niet_geschikt ?? 0} emoji="❌" />
       </div>
-      <div className="mb-6 rounded-2xl border border-border bg-slate-50 p-4 text-sm">
+      <div className="panel-cream mb-6 p-4 text-sm shadow-none">
         <strong>Geen gehoor:</strong> {c.geen_gehoor ?? 0}
       </div>
 
@@ -179,7 +179,7 @@ function StatBox({
   emoji: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+    <div className="panel-cream p-6 shadow-none">
       <p className="text-sm text-muted">
         {emoji} {label}
       </p>

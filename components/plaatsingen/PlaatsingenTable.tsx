@@ -93,7 +93,7 @@ export function PlaatsingenTable({
                 <div className="flex flex-wrap gap-2">
                   <Link
                     href={`/berichten?kandidaat=${p.kandidaatId}`}
-                    className="rounded-lg border border-border px-2 py-1 text-xs font-medium hover:bg-slate-50"
+                    className="btn-cream-secondary px-2 py-1 text-xs"
                   >
                     WhatsApp sturen
                   </Link>

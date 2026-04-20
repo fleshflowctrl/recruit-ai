@@ -157,18 +157,20 @@ export function BerichtenGrouped({
 
   return (
     <div className="grid gap-6 lg:grid-cols-5">
-      <div className="rounded-2xl border border-border bg-white p-4 shadow-sm lg:col-span-2">
+      <div className="panel-cream p-4 shadow-none lg:col-span-2">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="font-serif text-lg">Gesprekken</h2>
+          <h2 className="text-[15px] font-medium text-[color:var(--cream-text)]">
+            Gesprekken
+          </h2>
           {totalOngelezen > 0 && (
-            <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-white">
+            <span className="rounded-full bg-[color:var(--cream-text)] px-2 py-0.5 text-xs font-semibold text-[color:var(--cream-bg)]">
               {totalOngelezen} ongelezen
             </span>
           )}
         </div>
         <ul className="mt-3 max-h-[560px] space-y-2 overflow-y-auto">
           {list.length === 0 && (
-            <li className="rounded-xl border border-dashed border-border bg-slate-50/80 p-4 text-sm text-muted">
+            <li className="rounded-[10px] border border-dashed border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] p-4 text-sm text-[color:var(--cream-muted)]">
               Nog geen berichten. Berichten verschijnen hier zodra kandidaten
               reageren of wanneer u WhatsApp vanuit een kandidaat verstuurt.
             </li>
@@ -182,20 +184,22 @@ export function BerichtenGrouped({
               <button
                 type="button"
                 onClick={() => setSelectedId(kid)}
-                className={`flex w-full flex-col rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
+                className={
                   selectedId === kid
-                    ? "border-primary bg-blue-50"
-                    : "border-border hover:bg-slate-50"
-                }`}
+                    ? "flex w-full flex-col rounded-[10px] border border-[color:var(--cream-border-str)] bg-[color:var(--cream-surface)] px-3 py-2 text-left text-sm transition-colors"
+                    : "flex w-full flex-col rounded-[10px] border border-[color:var(--cream-border)] bg-[color:var(--cream-bg)] px-3 py-2 text-left text-sm transition-colors hover:bg-[color:var(--cream-surface)]"
+                }
               >
-                <span className="font-medium text-slate-900">{g.naam}</span>
-                <span className="line-clamp-1 text-xs text-muted">
+                <span className="font-medium text-[color:var(--cream-text)]">
+                  {g.naam}
+                </span>
+                <span className="line-clamp-1 text-xs text-[color:var(--cream-muted)]">
                   {g.items[g.items.length - 1]?.inhoud ?? ""}
                 </span>
-                <span className="mt-1 flex items-center gap-2 text-[10px] text-muted">
+                <span className="mt-1 flex items-center gap-2 text-[10px] text-[color:var(--cream-muted)]">
                   {format(new Date(g.lastAt), "PPp", { locale: nl })}
                   {ongelezenInThread > 0 && (
-                    <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
+                    <span className="rounded-full bg-[color:var(--cream-text)] px-2 py-0.5 text-[10px] font-medium text-[color:var(--cream-bg)]">
                       {ongelezenInThread}
                     </span>
                   )}
@@ -207,16 +211,18 @@ export function BerichtenGrouped({
         </ul>
       </div>
 
-      <div className="rounded-2xl border border-border bg-white p-4 shadow-sm lg:col-span-3">
+      <div className="panel-cream p-4 shadow-none lg:col-span-3">
         {!selectedId || !selected ? (
-          <p className="text-sm text-muted">
+          <p className="text-sm text-[color:var(--cream-muted)]">
             Selecteer een gesprek of stuur een eerste bericht vanaf de
             kandidaatpagina.
           </p>
         ) : (
           <>
-            <h3 className="font-serif text-lg">{selected.naam}</h3>
-            <div className="mt-4 flex max-h-[400px] flex-col gap-2 overflow-y-auto rounded-xl bg-slate-50/80 p-3">
+            <h3 className="text-[15px] font-medium text-[color:var(--cream-text)]">
+              {selected.naam}
+            </h3>
+            <div className="mt-4 flex max-h-[400px] flex-col gap-2 overflow-y-auto rounded-[10px] bg-[color:var(--cream-surface)] p-3">
               {selected.items.map((b) => (
                 <BerichtBubble
                   key={b.id}
@@ -231,13 +237,13 @@ export function BerichtenGrouped({
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Typ een bericht…"
-                className="flex-1 rounded-xl border border-border px-3 py-2 text-sm"
+                className="input-cream flex-1 text-sm"
               />
               <button
                 type="button"
                 onClick={verstuur}
                 disabled={!draft.trim() || verzenden}
-                className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                className="btn-cream-primary disabled:opacity-50"
               >
                 {verzenden ? "Verzenden…" : "Stuur bericht"}
               </button>

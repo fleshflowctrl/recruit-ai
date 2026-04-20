@@ -9,14 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        sidebar: "#0F172A",
-        primary: "#2563EB",
-        accent: "#00B4D8",
-        success: "#16A34A",
-        warning: "#D97706",
-        danger: "#DC2626",
-        muted: "#6B7280",
-        border: "#E5E7EB",
+        sidebar: "#2C2B28",
+        primary: "#1A1A18",
+        accent: "#5C6B3A",
+        success: "#1A5C2A",
+        warning: "#7A5C10",
+        danger: "#8B2020",
+        muted: "#8A8A85",
+        faint: "#B0AFA9",
+        border: "rgba(0,0,0,0.08)",
+        cream: {
+          bg: "#FAFAF8",
+          surface: "#F5F4F0",
+          raised: "#EFEDE8",
+        },
       },
       fontFamily: {
         serif: ["var(--font-instrument-serif)", "Georgia", "serif"],

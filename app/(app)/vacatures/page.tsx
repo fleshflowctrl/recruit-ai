@@ -24,10 +24,7 @@ export default async function VacaturesPage() {
       <Header
         title="Vacatures"
         actions={
-          <Link
-            href="/vacatures/nieuw"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white"
-          >
+          <Link href="/vacatures/nieuw" className="btn-cream-primary">
             + Vacature aanmaken
           </Link>
         }
@@ -37,7 +34,7 @@ export default async function VacaturesPage() {
           title="Nog geen vacatures. Voeg uw eerste vacature toe."
           description="Vacatures koppelt u aan opdrachtgevers en campagnes."
           action={
-            <Link href="/vacatures/nieuw" className="rounded-xl bg-primary px-4 py-2 text-sm text-white">
+            <Link href="/vacatures/nieuw" className="btn-cream-primary">
               Vacature aanmaken
             </Link>
           }
@@ -59,7 +56,7 @@ export default async function VacaturesPage() {
                 <Td>
                   <Link
                     href={`/vacatures/${v.id}`}
-                    className="font-medium text-primary hover:underline"
+                    className="font-medium text-[color:var(--cream-text)] hover:underline"
                   >
                     {v.titel}
                   </Link>

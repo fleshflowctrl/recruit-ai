@@ -32,14 +32,23 @@ export function Sidebar({
     window.location.href = "/login";
   }
 
+  const credits = bureau.credits_resterend;
+  const creditsBarPct = Math.min(100, (credits / 200) * 100);
+
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-800 bg-sidebar text-white md:flex">
-      <div className="flex h-16 items-center border-b border-slate-800 px-6">
-        <Link href="/dashboard" className="font-serif text-xl text-white">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[220px] flex-col border-r border-[rgba(255,255,255,0.06)] bg-sidebar text-white md:flex">
+      <div className="shrink-0 border-b border-[rgba(255,255,255,0.06)] px-4 py-4">
+        <Link
+          href="/dashboard"
+          className="block text-[14px] font-semibold tracking-[0.02em] text-[#F5F4F0]"
+        >
           RecruitAI
         </Link>
+        <p className="mt-1 truncate text-[11px] text-[rgba(255,255,255,0.35)]">
+          {bureau.naam}
+        </p>
       </div>
-      <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+      <nav className="flex-1 space-y-0 overflow-y-auto py-3">
         {APP_NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -48,46 +57,58 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 border-l-2 py-[7px] pl-4 pr-4 text-[13px] transition-all duration-[120ms]",
                 active
-                  ? "bg-white/10 text-white"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white",
+                  ? "border-[#C8B97A] bg-[rgba(255,255,255,0.08)] text-[#F5F4F0]"
+                  : "border-transparent bg-transparent text-[rgba(255,255,255,0.45)] hover:bg-[rgba(255,255,255,0.05)] hover:text-[rgba(255,255,255,0.75)]",
               )}
             >
               {"emoji" in item ?
-                <span aria-hidden>{item.emoji}</span>
-              : <Zap className="h-4 w-4 shrink-0 text-amber-400" aria-hidden />}
+                <span aria-hidden className="text-[15px] leading-none">
+                  {item.emoji}
+                </span>
+              : <Zap
+                  className="h-[15px] w-[15px] shrink-0 text-[#C8B97A]"
+                  strokeWidth={1.5}
+                  aria-hidden
+                />}
               {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-slate-800 p-4 text-sm">
-        <p className="truncate font-medium text-white">{bureau.naam}</p>
-        <p className="mt-1 inline-flex rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-200">
+      <div className="shrink-0 space-y-3 border-t border-[rgba(255,255,255,0.06)] p-4">
+        <div>
+          <div className="mb-1 flex items-center justify-between text-[11px] text-[rgba(255,255,255,0.35)]">
+            <span>Credits resterend</span>
+            <span
+              className={cn(
+                "font-medium text-[#F5F4F0]",
+                credits < 20 && "text-[#E8C96C]",
+              )}
+            >
+              {credits}
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.1)]">
+            <div
+              className="h-full rounded-full bg-[#C8B97A] transition-[width] duration-300"
+              style={{ width: `${creditsBarPct}%` }}
+            />
+          </div>
+        </div>
+        <p className="inline-flex rounded-full bg-[rgba(255,255,255,0.08)] px-2 py-0.5 text-[11px] text-[rgba(255,255,255,0.75)]">
           {planLabel(bureau.plan)}
         </p>
-        <p className="mt-3 text-slate-400">
-          Credits:{" "}
-          <span
-            className={cn(
-              "font-semibold text-white",
-              bureau.credits_resterend < 20 && "text-warning",
-            )}
-          >
-            {bureau.credits_resterend}
-          </span>{" "}
-          resterend
-        </p>
         {profile.volledige_naam && (
-          <p className="mt-2 truncate text-xs text-slate-500">
+          <p className="truncate text-[11px] text-[rgba(255,255,255,0.35)]">
             {profile.volledige_naam}
           </p>
         )}
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-4 w-full rounded-xl border border-slate-600 py-2 text-center text-sm font-medium text-slate-200 hover:bg-white/5"
+          className="w-full rounded-[7px] border border-[rgba(255,255,255,0.12)] bg-transparent py-2 text-center text-[13px] font-medium text-[rgba(255,255,255,0.85)] transition-colors hover:bg-[rgba(255,255,255,0.06)]"
         >
           Uitloggen
         </button>
