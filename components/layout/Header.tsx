@@ -18,12 +18,12 @@ export function Header({
         className,
       )}
     >
-      <div>
-        <h1 className="text-[15px] font-medium text-[color:var(--cream-text)]">
+      <div className="min-w-0">
+        <h1 className="break-words text-[15px] font-medium text-[color:var(--cream-text)]">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-0.5 text-[13px] text-[color:var(--cream-muted)]">
+          <p className="mt-0.5 break-words text-[13px] text-[color:var(--cream-muted)]">
             {subtitle}
           </p>
         )}

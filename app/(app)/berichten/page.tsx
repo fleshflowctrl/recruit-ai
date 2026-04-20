@@ -31,31 +31,10 @@ export default async function BerichtenPage({
     })) ?? [];
 
   return (
-    <div
-      style={{
-        height: "calc(100vh - 0px)",
-        display: "flex",
-        flexDirection: "column",
-        background: "#FAFAF8",
-      }}
-      className="min-h-0 flex-1"
-    >
-      <div
-        style={{
-          padding: "20px 24px 16px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexShrink: 0,
-        }}
-      >
+    <div className="flex min-h-0 flex-1 flex-col bg-[#FAFAF8]">
+      <div className="flex shrink-0 items-center justify-between px-1 pb-3 pt-1 sm:px-0 sm:pb-4 sm:pt-0">
         <h1
-          style={{
-            fontSize: "22px",
-            fontWeight: 500,
-            letterSpacing: "-0.3px",
-            color: "#1A1A18",
-          }}
+          className="text-[20px] font-medium tracking-[-0.3px] text-[#1A1A18] sm:text-[22px]"
         >
           Berichten
         </h1>

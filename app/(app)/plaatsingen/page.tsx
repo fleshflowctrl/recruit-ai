@@ -118,7 +118,7 @@ export default async function PlaatsingenPage() {
     }, 0);
 
   return (
-    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+    <PageWrapper className="space-y-5">
       <div>
         <h1
           className="text-2xl font-medium tracking-tight"

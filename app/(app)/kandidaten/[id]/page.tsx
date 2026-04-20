@@ -96,7 +96,7 @@ export default async function KandidaatDetailPage({
 
       <div className="grid gap-8 lg:grid-cols-5">
         <div className="space-y-8 lg:col-span-3">
-          <section className="panel-cream p-6 shadow-none">
+          <section className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">Profiel</h2>
             <dl className="mt-4 grid gap-2 text-sm">
               <div>
@@ -143,7 +143,7 @@ export default async function KandidaatDetailPage({
             <NotitiesForm kandidaatId={k.id} initial={k.notities ?? ""} />
           </section>
 
-          <section className="panel-cream p-6 shadow-none">
+          <section className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">Score-geschiedenis</h2>
             <ul className="mt-3 space-y-2 text-sm">
               {scoresMetDatum.length === 0 && (
@@ -166,7 +166,7 @@ export default async function KandidaatDetailPage({
             </ul>
           </section>
 
-          <section className="panel-cream p-6 shadow-none">
+          <section className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">Gesprekken</h2>
             <ul className="mt-4 space-y-3">
               {(gesprekken ?? []).length === 0 && (
@@ -207,7 +207,7 @@ export default async function KandidaatDetailPage({
         </div>
 
         <div className="space-y-6 lg:col-span-2">
-          <div className="panel-cream p-6 shadow-none">
+          <div className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">Snelle acties</h2>
             <div className="mt-4 space-y-3">
               <KandidaatActies
@@ -229,7 +229,7 @@ export default async function KandidaatDetailPage({
             </div>
           </div>
 
-          <div className="panel-cream p-6 shadow-none">
+          <div className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">Statistieken</h2>
             <ul className="mt-3 space-y-2 text-sm">
               <li>Aantal gesprekken: {gesprekken?.length ?? 0}</li>
@@ -242,7 +242,7 @@ export default async function KandidaatDetailPage({
             </ul>
           </div>
 
-          <div className="panel-cream p-6 shadow-none">
+          <div className="panel-cream p-4 shadow-none sm:p-6">
             <h2 className="font-serif text-lg text-slate-900">
               WhatsApp-geschiedenis
             </h2>

@@ -125,7 +125,7 @@ export default async function CampagneDetailPage({
         title={c.naam}
         subtitle={`Type: ${c.type}`}
         actions={
-          <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
             <StatusBadge status={c.status} />
             <CampagneActions campagneId={c.id} />
             <ExportGeschiktenButton
@@ -145,7 +145,7 @@ export default async function CampagneDetailPage({
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="panel-cream p-6 text-center shadow-none">
+        <div className="panel-cream p-4 text-center shadow-none sm:p-6">
           <p className="text-3xl font-semibold text-primary">{pct}%</p>
           <p className="text-sm text-muted">Voortgang</p>
           <div className="mt-4">

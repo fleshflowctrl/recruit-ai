@@ -145,10 +145,15 @@ select.flow-input {
   margin-bottom: 0;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   color: var(--cream-text);
   background: var(--cream-bg);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 @layer components {

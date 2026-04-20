@@ -299,7 +299,7 @@ export function InstellingenClient({
   const whatsappGekoppeld = Boolean(bureau.whatsapp_nummer);
 
   return (
-    <div className="mx-auto max-w-[760px] space-y-5 pb-10">
+    <div className="mx-auto w-full min-w-0 max-w-[760px] space-y-5 pb-10">
       <div>
         <h1
           className="text-2xl font-medium tracking-tight text-[#1A1A18]"

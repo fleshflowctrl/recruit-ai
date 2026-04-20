@@ -8,6 +8,8 @@ export function PageWrapper({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto max-w-7xl", className)}>{children}</div>
+    <div className={cn("mx-auto w-full min-w-0 max-w-7xl", className)}>
+      {children}
+    </div>
   );
 }

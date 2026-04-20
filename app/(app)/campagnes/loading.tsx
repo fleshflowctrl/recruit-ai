@@ -13,7 +13,7 @@ export default function CampagnesLoading() {
         </div>
       </div>
       <div className="overflow-x-auto rounded-[10px] border border-[color:var(--cream-border)]">
-        <div className="min-w-[800px]">
+        <div className="w-full min-w-[min(100%,800px)]">
           <div className="flex gap-4 border-b border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] p-3">
             {Array.from({ length: 8 }).map((_, i) => (
               <div

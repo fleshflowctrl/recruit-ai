@@ -82,7 +82,7 @@ export function StatCardSparkline({
   const trendStyle = TREND_BADGE[trendType];
 
   return (
-    <div className="rounded-[10px] border border-[rgba(0,0,0,0.06)] bg-[#F5F4F0] px-4 py-[14px] transition-all duration-150 hover:bg-[#EFEDE8]">
+    <div className="min-w-0 rounded-[10px] border border-[rgba(0,0,0,0.06)] bg-[#F5F4F0] px-3 py-3 transition-all duration-150 hover:bg-[#EFEDE8] sm:px-4 sm:py-[14px]">
       <div className="flex items-start justify-between gap-2">
         <span
           className="text-[24px] font-medium leading-none"

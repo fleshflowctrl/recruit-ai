@@ -55,7 +55,6 @@ const creamWrapperStyle: CSSProperties = {
   ["--cream-red" as string]: "#F5D9D9",
   background: "var(--cream-bg)",
   fontFamily: "-apple-system, system-ui, sans-serif",
-  padding: 24,
   borderRadius: 12,
 };
 
@@ -615,7 +614,7 @@ export function AutomatiseringFlowBuilder() {
 
   if (loading) {
     return (
-      <div style={creamWrapperStyle}>
+      <div className="p-4 sm:p-6" style={creamWrapperStyle}>
         <div
           style={{
             padding: 40,
@@ -631,7 +630,7 @@ export function AutomatiseringFlowBuilder() {
   }
 
   return (
-    <div style={creamWrapperStyle}>
+    <div className="p-4 sm:p-6" style={creamWrapperStyle}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

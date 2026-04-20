@@ -30,7 +30,7 @@ export default async function OpdrachtgeversPage() {
   }
 
   return (
-    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+    <PageWrapper className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0 flex-1">
           <h1 className="text-[24px] font-medium tracking-[-0.3px] text-[#1A1A18]">

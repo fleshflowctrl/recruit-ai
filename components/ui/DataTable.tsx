@@ -32,7 +32,7 @@ export function Th({
   return (
     <th
       className={cn(
-        "whitespace-nowrap border-b border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] px-4 py-2.5 text-[11px] font-medium uppercase tracking-wider text-[color:var(--cream-faint)]",
+        "whitespace-nowrap border-b border-[color:var(--cream-border)] bg-[color:var(--cream-surface)] px-2.5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-[color:var(--cream-faint)] sm:px-4",
         className,
       )}
     >
@@ -53,7 +53,7 @@ export function Td({
   return (
     <td
       className={cn(
-        "border-b border-[color:var(--cream-border)] px-4 py-3 text-[color:var(--cream-text)]",
+        "border-b border-[color:var(--cream-border)] px-2.5 py-3 text-[color:var(--cream-text)] sm:px-4",
         className,
       )}
       onClick={onClick}

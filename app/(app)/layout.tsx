@@ -18,11 +18,13 @@ export default async function AppLayout({
     <>
       <MockBanner />
       <ToasterProvider />
-      <div className="flex min-h-screen bg-[var(--cream-bg)]">
+      <div className="flex min-h-screen min-w-0 bg-[var(--cream-bg)]">
         <MobileHeader />
         <Sidebar bureau={ctx.bureau} profile={ctx.profile} />
-        <div className="flex min-h-screen flex-1 flex-col pt-14 md:pt-0 md:pl-[220px]">
-          <main className="flex-1 p-6 pb-24 md:pb-8">{children}</main>
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col pt-14 md:pt-0 md:pl-[220px]">
+          <main className="flex min-h-0 flex-1 flex-col p-4 pb-24 sm:p-6 md:pb-8">
+            {children}
+          </main>
           <MobileBottomNav />
         </div>
       </div>

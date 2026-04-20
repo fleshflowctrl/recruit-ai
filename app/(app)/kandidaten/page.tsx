@@ -92,7 +92,7 @@ export default async function KandidatenPage({
   const hasFilters = Boolean(q || status || rijbewijs);
 
   return (
-    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+    <PageWrapper className="space-y-5">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:flex-wrap">
         <div>
           <h1 className="text-[26px] font-medium text-[#1A1A18]">

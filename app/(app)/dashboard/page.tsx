@@ -113,16 +113,16 @@ export default async function DashboardPage() {
     : "--:--";
 
   return (
-    <PageWrapper className="space-y-5 p-4 md:p-8">
+    <PageWrapper className="space-y-5">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
-        <div>
-          <h1 className="text-[26px] font-medium text-[#1A1A18]">
+        <div className="min-w-0">
+          <h1 className="text-xl font-medium text-[#1A1A18] sm:text-[26px]">
             Goedemorgen,{" "}
             <span className="text-[#8A8A85]">{ctx.bureau.naam}</span>
           </h1>
           <p className="mt-1 text-[13px] text-[#8A8A85]">{datumCap}</p>
         </div>
-        <Link href="/campagnes/nieuw" className="btn-primary shrink-0">
+        <Link href="/campagnes/nieuw" className="btn-primary w-full shrink-0 sm:w-auto">
           + Nieuwe campagne
         </Link>
       </div>
@@ -136,7 +136,7 @@ export default async function DashboardPage() {
         isActive={(actieveCampagnes ?? 0) > 0}
       />
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatCardSparkline
           label="Geschiktheid vandaag"
           value={`${pct}%`}

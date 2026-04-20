@@ -24,8 +24,8 @@ export default async function AccountSetupPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-lg rounded-2xl border border-border bg-white p-8 shadow-sm">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-8">
+      <div className="w-full max-w-lg rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-8">
         <h1 className="font-serif text-2xl text-slate-900">Account nog niet gekoppeld</h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
           Je bent ingelogd, maar er is nog geen <strong>profiel</strong> gekoppeld aan een{" "}

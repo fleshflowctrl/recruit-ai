@@ -21,7 +21,7 @@ export function LiveHero({
 }: LiveHeroProps) {
   if (!isActive) {
     return (
-      <div className="mb-5 rounded-[14px] bg-[#1A1A18] px-5 py-6">
+      <div className="mb-5 rounded-[14px] bg-[#1A1A18] px-5 py-6 sm:px-6">
         <p className="text-[16px] font-medium text-[#F5F4F0]">
           Geen actieve campagnes
         </p>
@@ -44,7 +44,7 @@ export function LiveHero({
       : "Campagne is actief";
 
   return (
-    <div className="relative mb-5 grid grid-cols-1 gap-5 overflow-hidden rounded-[14px] bg-[#1A1A18] p-5 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-6 lg:p-7">
+      <div className="relative mb-5 grid grid-cols-1 gap-5 overflow-hidden rounded-[14px] bg-[#1A1A18] p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-6 lg:p-7">
       <div
         className="pointer-events-none absolute -right-10 -top-10 h-[180px] w-[180px] rounded-full bg-[rgba(200,180,100,0.06)]"
         aria-hidden
@@ -61,7 +61,7 @@ export function LiveHero({
             LIVE — AI AAN HET BELLEN
           </span>
         </div>
-        <h2 className="mb-1.5 text-[18px] font-medium leading-snug text-[#F5F4F0]">
+        <h2 className="mb-1.5 text-[17px] font-medium leading-snug text-[#F5F4F0] sm:text-[18px]">
           {title}
         </h2>
         <p className="text-[13px] text-[rgba(245,244,240,0.4)]">
@@ -94,7 +94,7 @@ export function LiveHero({
 
       <div className="relative z-[1] shrink-0 text-left lg:text-right">
         <p
-          className="text-[56px] font-normal leading-none tracking-[-2px] text-[#F5F4F0]"
+          className="text-4xl font-normal leading-none tracking-[-2px] text-[#F5F4F0] sm:text-5xl lg:text-[56px]"
           style={{ fontFamily: "ui-monospace, monospace" }}
         >
           {gebeldVandaag}

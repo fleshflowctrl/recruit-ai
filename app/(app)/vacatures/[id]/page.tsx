@@ -162,7 +162,7 @@ export default async function VacatureDetailPage({
   ];
 
   return (
-    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+    <PageWrapper className="space-y-5">
       <Link
         href="/vacatures"
         className="inline-block text-[13px]"
@@ -173,11 +173,11 @@ export default async function VacatureDetailPage({
 
       {/* HERO */}
       <div
-        className="flex flex-col gap-6 rounded-[14px] bg-[#1A1A18] p-7 lg:flex-row lg:items-start lg:justify-between"
+        className="flex flex-col gap-6 rounded-[14px] bg-[#1A1A18] p-5 sm:p-7 lg:flex-row lg:items-start lg:justify-between"
       >
         <div className="flex min-w-0 flex-1 flex-col gap-2.5">
           <h1
-            className="text-[22px] font-semibold"
+            className="break-words text-lg font-semibold sm:text-[22px]"
             style={{ color: "#F5F4F0" }}
           >
             {vacature.titel}
@@ -256,14 +256,14 @@ export default async function VacatureDetailPage({
         <div className="flex w-full shrink-0 flex-col items-stretch gap-2.5 lg:w-auto lg:items-end">
           <div>
             <div
-              className="text-right font-mono text-[22px] font-semibold whitespace-nowrap"
+              className="text-left font-mono text-xl font-semibold whitespace-nowrap sm:text-[22px] lg:text-right"
               style={{ color: "#F5F4F0" }}
             >
               {salarisTekst}
             </div>
             {hasSalaris ? (
               <div
-                className="text-right text-[11px]"
+                className="text-left text-[11px] lg:text-right"
                 style={{ color: "rgba(245,244,240,0.35)" }}
               >
                 per maand
@@ -509,7 +509,7 @@ export default async function VacatureDetailPage({
               </span>
             </div>
             <div
-              className="grid grid-cols-2 gap-3.5 px-[18px] py-4"
+              className="grid grid-cols-1 gap-3.5 px-[18px] py-4 sm:grid-cols-2"
             >
               {infoGrid.map(([label, val]) => (
                 <div key={label}>
