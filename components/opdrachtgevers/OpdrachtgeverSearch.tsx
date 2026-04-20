@@ -93,9 +93,9 @@ export function OpdrachtgeverSearch({
     <div className="space-y-4">
       <div
         ref={panelRef}
-        className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-3"
+        className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3"
       >
-        <div className="relative min-w-0 flex-1 sm:max-w-[400px]">
+        <div className="relative min-w-0 w-full flex-1">
           <span
             className="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2 text-[#B0AFA9]"
             aria-hidden
@@ -124,7 +124,7 @@ export function OpdrachtgeverSearch({
           />
         </div>
 
-        <div className="relative shrink-0 sm:self-start">
+        <div className="relative shrink-0 sm:self-center">
           <button
             type="button"
             onClick={() => setFilterOpen((o) => !o)}

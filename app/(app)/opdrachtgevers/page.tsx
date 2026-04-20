@@ -31,8 +31,8 @@ export default async function OpdrachtgeversPage() {
 
   return (
     <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <h1 className="text-[24px] font-medium tracking-[-0.3px] text-[#1A1A18]">
             Opdrachtgevers
             <em className="font-[inherit] not-italic text-[#B0AFA9]">
@@ -44,7 +44,10 @@ export default async function OpdrachtgeversPage() {
             Bedrijven waarvoor u vacatures plaatst
           </p>
         </div>
-        <Link href="/opdrachtgevers/nieuw" className="btn-primary shrink-0">
+        <Link
+          href="/opdrachtgevers/nieuw"
+          className="btn-primary shrink-0 self-center"
+        >
           + Toevoegen
         </Link>
       </div>
