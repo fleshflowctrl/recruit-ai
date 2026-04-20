@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 const ITEMS = [
   { href: "/dashboard", label: "Home", emoji: "📊" },
   { href: "/kandidaten", label: "Kandidaten", emoji: "👥" },
-  { href: "/campagnes", label: "Campagnes", emoji: "📞" },
+  { href: "/vacatures", label: "Vacatures", emoji: "💼" },
   { href: "/instellingen", label: "Meer", emoji: "⚙️" },
 ];
 
