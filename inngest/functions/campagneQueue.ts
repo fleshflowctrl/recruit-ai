@@ -3,9 +3,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { startOutboundCall } from "@/lib/telnyx";
 import { analyseGesprek } from "@/lib/claude";
 import { sendGesprekRapportEmail } from "@/lib/email";
+import {
+  getFlowSettings,
+  isWithinBeltijdVenster,
+  stemToVoiceId,
+} from "@/lib/automatisering";
 
 const GAP_SECONDS = 30;
-const MAX_PARALLEL = 3;
 
 async function bumpCampagneCounters(
   admin: ReturnType<typeof createAdminClient>,
@@ -39,6 +43,14 @@ export const campagneStart = inngest.createFunction(
     };
     const admin = createAdminClient();
 
+    const flowCfg = await getFlowSettings(bureauId);
+    const MAX_PARALLEL = flowCfg.aiBellen.maxParallel;
+    const now = new Date();
+    if (!isWithinBeltijdVenster(now, flowCfg.aiBellen.beltijdVan, flowCfg.aiBellen.beltijdTot)) {
+      return { ok: false, reason: "buiten_beltijd" };
+    }
+    const voiceId = stemToVoiceId(flowCfg.aiBellen.stem);
+
     const { data: campagne, error: cErr } = await admin
       .from("campagnes")
       .select("*")
@@ -67,7 +79,6 @@ export const campagneStart = inngest.createFunction(
       .in("status", ["wacht", "geen_gehoor"]);
     if (ckErr) throw ckErr;
 
-    const now = new Date();
     const pending = (rows ?? []).filter((r) => {
       if (r.status === "geen_gehoor" && r.volgende_bel_poging) {
         return new Date(r.volgende_bel_poging as string) <= now;
@@ -105,6 +116,15 @@ export const campagneStart = inngest.createFunction(
       parallel += 1;
 
       await step.run(`dial-${ck.id}`, async () => {
+        if (
+          !isWithinBeltijdVenster(
+            new Date(),
+            flowCfg.aiBellen.beltijdVan,
+            flowCfg.aiBellen.beltijdTot,
+          )
+        ) {
+          return;
+        }
         const k = ck.kandidaten as Record<string, unknown> | null;
         if (!k?.id || !k.telefoon) return;
 
@@ -130,6 +150,7 @@ export const campagneStart = inngest.createFunction(
           eisen: Array.isArray(vacature?.eisen)
             ? (vacature?.eisen as string[]).join(", ")
             : "—",
+          voice: voiceId,
         });
 
         await admin.from("gesprekken").insert({

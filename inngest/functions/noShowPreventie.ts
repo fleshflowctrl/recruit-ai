@@ -2,6 +2,11 @@ import { inngest } from "@/inngest/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildNoShowReminder, sendWhatsApp } from "@/lib/whatsapp";
 import { sendNoShowAlertNaarBureau } from "@/lib/email";
+import {
+  computeNoShowReminderAt,
+  geenReactieNaToSleep,
+  getFlowSettings,
+} from "@/lib/automatisering";
 
 type PlaatsingEvent = {
   plaatsingId: string;
@@ -13,16 +18,6 @@ type PlaatsingEvent = {
   tijd: string;
 };
 
-function reminderDayBeforeAt17(startdatum: string): Date | null {
-  const [y, m, d] = startdatum.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  const start = new Date(y, m - 1, d);
-  const reminder = new Date(start);
-  reminder.setDate(reminder.getDate() - 1);
-  reminder.setHours(17, 0, 0, 0);
-  return reminder;
-}
-
 export const noShowPreventie = inngest.createFunction(
   {
     id: "no-show-preventie",
@@ -32,6 +27,11 @@ export const noShowPreventie = inngest.createFunction(
   async ({ event, step }) => {
     const data = event.data as PlaatsingEvent;
     const { plaatsingId, bureauId, kandidaatId, startdatum, tijd } = data;
+
+    const cfg = await getFlowSettings(bureauId);
+    if (!cfg.hasOptionalEnabled("no_show")) {
+      return { ok: false, reason: "stap-uitgeschakeld" };
+    }
 
     const ctx = await step.run("laad-plaatsing-context", async () => {
       const admin = createAdminClient();
@@ -77,7 +77,14 @@ export const noShowPreventie = inngest.createFunction(
       const start = plaatsing.startdatum ?? startdatum;
       let target: Date | null = data.reminderAt ? new Date(data.reminderAt) : null;
       if (!target || Number.isNaN(target.getTime())) {
-        target = start ? reminderDayBeforeAt17(String(start)) : null;
+        target =
+          start ?
+            computeNoShowReminderAt(
+              String(start),
+              cfg.noShow.dagenVoorStartdatum,
+              cfg.noShow.beltijd,
+            )
+          : null;
       }
 
       return {
@@ -122,7 +129,10 @@ export const noShowPreventie = inngest.createFunction(
       }
     });
 
-    await step.sleep("wacht-twee-uur", "2h");
+    await step.sleep(
+      "wacht-reactietijd",
+      geenReactieNaToSleep(cfg.noShow.geenReactieNa),
+    );
 
     await step.run("check-bevestiging-email", async () => {
       const admin = createAdminClient();
@@ -148,6 +158,10 @@ export const noShowPreventie = inngest.createFunction(
         .single();
 
       const naam = kandidaat?.naam ?? "Kandidaat";
+      if (cfg.noShow.dan === "Automatisch vervanger zoeken") {
+        console.info("noShow: vervanger-flow (nog niet geïmplementeerd)", plaatsingId);
+        return;
+      }
       if (bureau?.email) {
         await sendNoShowAlertNaarBureau({
           bureauEmail: bureau.email,

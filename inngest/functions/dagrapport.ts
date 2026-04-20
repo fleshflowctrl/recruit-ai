@@ -4,12 +4,13 @@ import { sendDagrapportEmailUitgebreid } from "@/lib/email";
 import { amsterdamDayRangeIso } from "@/lib/dates/amsterdam";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
+import { getFlowSettings, matchesHourMinute } from "@/lib/automatisering";
 
 export const dagrapportCron = inngest.createFunction(
   {
     id: "dagrapport-dagelijks",
     name: "Dagrapport e-mail",
-    triggers: [{ cron: "0 16 * * *" }],
+    triggers: [{ cron: "0 * * * *" }],
   },
   async ({ step }) => {
     const bureaus = await step.run("bureaus-met-actieve-campagne", async () => {
@@ -36,8 +37,15 @@ export const dagrapportCron = inngest.createFunction(
       process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
       "http://localhost:3000";
 
+    const now = new Date();
+
     for (const b of bureaus) {
-      if (!b.email) continue;
+      const cfg = await getFlowSettings(b.id);
+      if (!cfg.hasOptionalEnabled("dagrapport")) continue;
+      if (!matchesHourMinute(now, cfg.dagrapport.tijdstip)) continue;
+
+      const toEmail = cfg.dagrapport.sturenNaarEmail?.trim() || b.email;
+      if (!toEmail) continue;
 
       await step.run(`dagrapport-${b.id}`, async () => {
         const admin = createAdminClient();
@@ -51,6 +59,13 @@ export const dagrapportCron = inngest.createFunction(
 
         const rows = gesprekken ?? [];
         const totaalGebeld = rows.length;
+
+        if (
+          cfg.dagrapport.alleenBij === "Alleen als er calls waren" &&
+          totaalGebeld === 0
+        ) {
+          return;
+        }
 
         let geschikt = 0;
         let twijfel = 0;
@@ -126,7 +141,7 @@ export const dagrapportCron = inngest.createFunction(
         );
 
         await sendDagrapportEmailUitgebreid({
-          to: b.email,
+          to: toEmail,
           datumLabel,
           totaalGebeld,
           geschikt,

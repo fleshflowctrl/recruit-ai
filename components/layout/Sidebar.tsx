@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { Bureau, Profile } from "@/lib/types";
@@ -53,7 +54,9 @@ export function Sidebar({
                   : "text-slate-300 hover:bg-white/5 hover:text-white",
               )}
             >
-              <span aria-hidden>{item.emoji}</span>
+              {"emoji" in item ?
+                <span aria-hidden>{item.emoji}</span>
+              : <Zap className="h-4 w-4 shrink-0 text-amber-400" aria-hidden />}
               {item.label}
             </Link>
           );

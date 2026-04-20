@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { Zap } from "lucide-react";
 import { APP_NAV } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +67,9 @@ export function MobileHeader() {
                           : "text-slate-300 hover:bg-white/5",
                       )}
                     >
-                      <span aria-hidden>{item.emoji}</span>
+                      {"emoji" in item ?
+                        <span aria-hidden>{item.emoji}</span>
+                      : <Zap className="h-4 w-4 shrink-0 text-amber-400" aria-hidden />}
                       {item.label}
                     </Link>
                   </li>

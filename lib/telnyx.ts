@@ -8,6 +8,8 @@ export type OutboundCallParams = {
   salaris: { min: number; max: number };
   beschikbaarheid: string;
   eisen: string;
+  /** Telnyx AI stem-id, bijv. nl-NL-Wavenet-A */
+  voice?: string;
 };
 
 export function buildDutchRecruitmentPrompt(params: OutboundCallParams): string {
@@ -75,7 +77,7 @@ export async function startOutboundCall(
       }),
     ).toString("base64"),
     ai_assistant: {
-      voice: "nl-NL-Standard-A",
+      voice: params.voice ?? "nl-NL-Wavenet-A",
       language: "nl",
       prompt: systemPrompt,
       first_message: firstMessage,

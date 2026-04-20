@@ -29,6 +29,7 @@ const MAP: Record<string, { label: string; className: string }> = {
     className: "bg-emerald-50 text-emerald-800 ring-emerald-200",
   },
   beëindigd: { label: "Beëindigd", className: "bg-slate-100 text-muted ring-slate-200" },
+  vast: { label: "vast", className: "bg-amber-50 text-warning ring-amber-200" },
 };
 
 export function StatusBadge({ status }: { status: string | null | undefined }) {
