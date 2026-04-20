@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { DataTable, Th, Td } from "@/components/ui/DataTable";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { VacaturesClient } from "@/components/vacatures/VacaturesClient";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { formatEuro } from "@/lib/utils";
+import type { Vacature } from "@/lib/types";
 
 export default async function VacaturesPage() {
   const ctx = await getSessionContext();
@@ -19,58 +17,63 @@ export default async function VacaturesPage() {
     .eq("bureau_id", ctx.bureau.id)
     .order("aangemaakt_op", { ascending: false });
 
+  const { data: opdrachtgevers } = await supabase
+    .from("opdrachtgevers")
+    .select("id, naam")
+    .eq("bureau_id", ctx.bureau.id);
+
+  const opdrachtgeverMap: Record<string, string> = {};
+  for (const o of opdrachtgevers ?? []) {
+    opdrachtgeverMap[o.id] = o.naam;
+  }
+
   return (
-    <PageWrapper>
-      <Header
-        title="Vacatures"
-        actions={
-          <Link href="/vacatures/nieuw" className="btn-cream-primary">
-            + Vacature aanmaken
-          </Link>
-        }
-      />
+    <PageWrapper className="p-4 md:p-6 lg:p-8 space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1
+            style={{
+              fontSize: 24,
+              fontWeight: 500,
+              letterSpacing: "-0.3px",
+            }}
+          >
+            Vacatures
+            <em
+              className="not-italic"
+              style={{ color: "#B0AFA9" }}
+            >
+              {" "}
+              · {rows?.length ?? 0}
+            </em>
+          </h1>
+          <p
+            className="mt-0.5 text-[13px]"
+            style={{ color: "#8A8A85" }}
+          >
+            Openstaande en gesloten functies
+          </p>
+        </div>
+        <Link href="/vacatures/nieuw" className="btn-primary">
+          + Vacature aanmaken
+        </Link>
+      </div>
+
       {!rows?.length ? (
         <EmptyState
-          title="Nog geen vacatures. Voeg uw eerste vacature toe."
-          description="Vacatures koppelt u aan opdrachtgevers en campagnes."
+          title="Nog geen vacatures."
+          description="Voeg uw eerste vacature toe en koppel deze aan een opdrachtgever."
           action={
-            <Link href="/vacatures/nieuw" className="btn-cream-primary">
+            <Link href="/vacatures/nieuw" className="btn-primary">
               Vacature aanmaken
             </Link>
           }
         />
       ) : (
-        <div className="overflow-x-auto">
-        <DataTable>
-          <thead>
-            <tr>
-              <Th>Titel</Th>
-              <Th>Locatie</Th>
-              <Th>Salaris</Th>
-              <Th>Status</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((v) => (
-              <tr key={v.id}>
-                <Td>
-                  <Link
-                    href={`/vacatures/${v.id}`}
-                    className="font-medium text-[color:var(--cream-text)] hover:underline"
-                  >
-                    {v.titel}
-                  </Link>
-                </Td>
-                <Td>{v.locatie ?? "—"}</Td>
-                <Td>{formatEuro(v.salaris_min, v.salaris_max)}</Td>
-                <Td>
-                  <StatusBadge status={v.status} />
-                </Td>
-              </tr>
-            ))}
-          </tbody>
-        </DataTable>
-        </div>
+        <VacaturesClient
+          vacatures={rows as Vacature[]}
+          opdrachtgevers={opdrachtgeverMap}
+        />
       )}
     </PageWrapper>
   );
