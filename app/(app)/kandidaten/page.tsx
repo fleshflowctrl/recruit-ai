@@ -1,15 +1,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { DataTable, Th, Td } from "@/components/ui/DataTable";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { KandidaatKaart } from "@/components/kandidaten/KandidaatKaart";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { formatPhoneNl, timeAgoNl } from "@/lib/utils";
 import { KandidatenFilters } from "./KandidatenFilters";
 
 const PAGE_SIZE = 25;
@@ -58,6 +54,28 @@ export default async function KandidatenPage({
     .eq("bureau_id", ctx.bureau.id)
     .not("score", "is", null);
 
+  const [
+    { count: countActief },
+    { count: countGeplaatst },
+    { count: countInactief },
+  ] = await Promise.all([
+    supabase
+      .from("kandidaten")
+      .select("*", { count: "exact", head: true })
+      .eq("bureau_id", ctx.bureau.id)
+      .eq("status", "actief"),
+    supabase
+      .from("kandidaten")
+      .select("*", { count: "exact", head: true })
+      .eq("bureau_id", ctx.bureau.id)
+      .eq("status", "geplaatst"),
+    supabase
+      .from("kandidaten")
+      .select("*", { count: "exact", head: true })
+      .eq("bureau_id", ctx.bureau.id)
+      .eq("status", "inactief"),
+  ]);
+
   const avgByKandidaat: Record<string, number[]> = {};
   for (const g of scores ?? []) {
     if (!g.kandidaat_id || g.score == null) continue;
@@ -74,23 +92,40 @@ export default async function KandidatenPage({
   const hasFilters = Boolean(q || status || rijbewijs);
 
   return (
-    <PageWrapper>
-      <Header
-        title="Kandidaten"
-        actions={
-          <>
-            <Link href="/kandidaten/nieuw" className="btn-cream-primary">
-              + Toevoegen
-            </Link>
-            <Link href="/kandidaten/import" className="btn-cream-secondary">
-              Importeer CSV
-            </Link>
-          </>
-        }
-      />
+    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:flex-wrap">
+        <div>
+          <h1 className="text-[26px] font-medium text-[#1A1A18]">
+            Kandidaten
+            <em className="font-[inherit] not-italic text-[#B0AFA9]">
+              {" "}
+              · {count ?? 0}
+            </em>
+          </h1>
+          <p className="mt-1 text-[13px] text-[#8A8A85]">
+            {countActief ?? 0} actief · {countGeplaatst ?? 0} geplaatst ·{" "}
+            {countInactief ?? 0} inactief
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Link href="/kandidaten/import" className="btn-secondary">
+            Importeer CSV
+          </Link>
+          <Link href="/kandidaten/nieuw" className="btn-primary">
+            + Toevoegen
+          </Link>
+        </div>
+      </div>
 
-      <Suspense fallback={<LoadingSpinner />}>
-        <KandidatenFilters />
+      <Suspense fallback={<div className="text-[13px] text-[#8A8A85]">Laden…</div>}>
+        <KandidatenFilters
+          counts={{
+            alle: count ?? 0,
+            actief: countActief ?? 0,
+            geplaatst: countGeplaatst ?? 0,
+            inactief: countInactief ?? 0,
+          }}
+        />
       </Suspense>
 
       {!rows?.length ? (
@@ -113,96 +148,48 @@ export default async function KandidatenPage({
         />
       ) : (
         <>
-          <div className="overflow-x-auto">
-          <DataTable>
-            <thead>
-              <tr>
-                <Th>Naam</Th>
-                <Th>Telefoon</Th>
-                <Th>Status</Th>
-                <Th>Beschikbaar per</Th>
-                <Th>Sector(en)</Th>
-                <Th>Laatste contact</Th>
-                <Th>Score gem.</Th>
-                <Th>Acties</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((k) => {
-                const arr = avgByKandidaat[k.id];
-                const avg =
-                  arr?.length ?
-                    Math.round(
-                      arr.reduce((a, b) => a + b, 0) / arr.length,
-                    )
-                  : null;
-                return (
-                  <tr key={k.id}>
-                    <Td>
-                      <Link
-                        href={`/kandidaten/${k.id}`}
-                        className="font-medium text-[color:var(--cream-text)] hover:underline"
-                      >
-                        {k.naam}
-                      </Link>
-                    </Td>
-                    <Td>{formatPhoneNl(k.telefoon)}</Td>
-                    <Td>
-                      <StatusBadge status={k.status} />
-                    </Td>
-                    <Td>{k.beschikbaar_per ?? "—"}</Td>
-                    <Td>{(k.sectoren ?? []).join(", ") || "—"}</Td>
-                    <Td>{timeAgoNl(k.laatste_contact)}</Td>
-                    <Td>{avg != null ? `${avg}/10` : "—"}</Td>
-                    <Td>
-                      <div className="flex flex-wrap gap-2 text-sm">
-                        <Link
-                          href={`/kandidaten/${k.id}`}
-                          className="text-[color:var(--cream-text)] hover:underline"
-                        >
-                          Bekijken
-                        </Link>
-                        <span className="text-border">|</span>
-                        <Link
-                          href={`/kandidaten/${k.id}?bel=1`}
-                          className="text-[color:var(--cream-text)] hover:underline"
-                        >
-                          Bellen
-                        </Link>
-                        <span className="text-border">|</span>
-                        <Link
-                          href={`/kandidaten/${k.id}?whatsapp=1`}
-                          className="text-[color:var(--cream-muted)] hover:underline"
-                        >
-                          WhatsApp
-                        </Link>
-                      </div>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </DataTable>
+          <div
+            className="grid gap-3"
+            style={{
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            }}
+          >
+            {rows.map((k) => {
+              const arr = avgByKandidaat[k.id];
+              const avg =
+                arr?.length ?
+                  Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
+                : null;
+              return (
+                <KandidaatKaart
+                  key={k.id}
+                  kandidaat={k}
+                  gemiddeldeScore={avg}
+                  href={`/kandidaten/${k.id}`}
+                />
+              );
+            })}
           </div>
-          <div className="mt-4 flex items-center justify-between text-sm text-muted">
-            <span>
-              Pagina {page} van {pages} ({count ?? 0} totaal)
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <span className="text-[13px] text-[#8A8A85]">
+              Pagina {page} van {pages} · {count ?? 0} kandidaten
             </span>
             <div className="flex gap-2">
               {page > 1 && (
                 <Link
                   href={`/kandidaten?${base}${base ? "&" : ""}page=${page - 1}`}
-                  className="btn-cream-secondary px-3 py-1 text-xs"
+                  className="pbtn"
                 >
-                  Vorige
+                  ← Vorige
                 </Link>
               )}
               {page < pages && (
                 <Link
                   href={`/kandidaten?${base}${base ? "&" : ""}page=${page + 1}`}
-                  className="btn-cream-secondary px-3 py-1 text-xs"
+                  className="pbtn"
                 >
-                  Volgende
+                  Volgende →
                 </Link>
               )}
             </div>
