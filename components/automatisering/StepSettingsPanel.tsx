@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties, type FocusEvent } from "react";
 import { X } from "lucide-react";
 import type { OptioneelStapKind, VasteStapId } from "@/lib/automatisering-types";
 import type {
@@ -28,6 +28,40 @@ import {
   DEFAULT_CHECK_IN,
   DEFAULT_DAGRAPPORT,
 } from "@/lib/automatisering";
+
+const fieldLabelStyle: CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: "var(--cream-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  marginBottom: 5,
+  display: "block",
+};
+
+const fieldWrapStyle: CSSProperties = { marginBottom: 13 };
+
+const inputStyle: CSSProperties = {
+  width: "100%",
+  padding: "8px 10px",
+  border: "1px solid var(--cream-border-md)",
+  borderRadius: 7,
+  fontSize: 13,
+  background: "var(--cream-surface)",
+  color: "var(--cream-text)",
+  outline: "none",
+  transition: "border-color 150ms",
+  appearance: "auto",
+};
+
+const creamIH = {
+  onFocus: (e: FocusEvent<HTMLSelectElement | HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = "var(--cream-border-str)";
+  },
+  onBlur: (e: FocusEvent<HTMLSelectElement | HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = "rgba(0,0,0,0.13)";
+  },
+};
 
 export type PanelSelection =
   | { t: "fixed"; id: VasteStapId }
@@ -80,10 +114,11 @@ export function StepSettingsPanel({
   if (selection.t === "fixed" && selection.id === "trigger") {
     body = (
       <div>
-        <div className="flow-field">
-          <label className="flow-field-label">Trigger type</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Trigger type</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={trigger.triggerType}
             onChange={(e) =>
               onChangeFixed("trigger", {
@@ -97,10 +132,11 @@ export function StepSettingsPanel({
             <option>Opdracht via WhatsApp</option>
           </select>
         </div>
-        <div className="flow-field">
-          <label className="flow-field-label">Auto-start campagne</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Auto-start campagne</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={trigger.autoStartCampagne}
             onChange={(e) =>
               onChangeFixed("trigger", {
@@ -118,10 +154,11 @@ export function StepSettingsPanel({
   } else if (selection.t === "fixed" && selection.id === "ai_bellen") {
     body = (
       <div>
-        <div className="flow-field">
-          <label className="flow-field-label">Stem</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Stem</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={ai.stem}
             onChange={(e) =>
               onChangeFixed("ai_bellen", {
@@ -135,29 +172,32 @@ export function StepSettingsPanel({
           </select>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="flow-field">
-            <label className="flow-field-label">Beltijd van</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Beltijd van</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={ai.beltijdVan}
               onChange={(e) => onChangeFixed("ai_bellen", { ...ai, beltijdVan: e.target.value })}
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Beltijd tot</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Beltijd tot</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={ai.beltijdTot}
               onChange={(e) => onChangeFixed("ai_bellen", { ...ai, beltijdTot: e.target.value })}
             />
           </div>
         </div>
-        <div className="flow-field">
-          <label className="flow-field-label">Max pogingen</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Max pogingen</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={ai.maxPogingen}
             onChange={(e) =>
               onChangeFixed("ai_bellen", {
@@ -173,10 +213,11 @@ export function StepSettingsPanel({
             ))}
           </select>
         </div>
-        <div className="flow-field">
-          <label className="flow-field-label">Wachttijd tussen pogingen</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Wachttijd tussen pogingen</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={ai.wachttijdTussenPogingen}
             onChange={(e) =>
               onChangeFixed("ai_bellen", {
@@ -192,10 +233,11 @@ export function StepSettingsPanel({
             <option>4 uur</option>
           </select>
         </div>
-        <div className="flow-field">
-          <label className="flow-field-label">Max parallel bellen</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Max parallel bellen</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={ai.maxParallel}
             onChange={(e) =>
               onChangeFixed("ai_bellen", {
@@ -216,10 +258,11 @@ export function StepSettingsPanel({
   } else if (selection.t === "fixed" && selection.id === "whatsapp") {
     body = (
       <div>
-        <div className="flow-field">
-          <label className="flow-field-label">Versturen na</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Versturen na</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={wa.versturenNa}
             onChange={(e) =>
               onChangeFixed("whatsapp", {
@@ -233,10 +276,11 @@ export function StepSettingsPanel({
             <option>Volgende ochtend 09:00</option>
           </select>
         </div>
-        <div className="flow-field">
-          <label className="flow-field-label">Bevestiging vragen</label>
+        <div style={fieldWrapStyle}>
+          <label style={fieldLabelStyle}>Bevestiging vragen</label>
           <select
-            className="flow-input"
+            style={inputStyle}
+            {...creamIH}
             value={wa.bevestigingVragen}
             onChange={(e) =>
               onChangeFixed("whatsapp", {
@@ -263,21 +307,23 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_NO_SHOW }) as NoShowSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Beltijd</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Beltijd</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.beltijd}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "no_show", { ...s, beltijd: e.target.value })
               }
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Dagen voor startdatum</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Dagen voor startdatum</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.dagenVoorStartdatum}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "no_show", {
@@ -291,10 +337,11 @@ export function StepSettingsPanel({
               <option>3 dagen</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Geen reactie na</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Geen reactie na</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.geenReactieNa}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "no_show", {
@@ -308,10 +355,11 @@ export function StepSettingsPanel({
               <option>4 uur</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Dan</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Dan</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.dan}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "no_show", {
@@ -330,10 +378,11 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_BESCHIKBAARHEID }) as BeschikbaarheidSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Dag</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Dag</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.dag}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "beschikbaarheid", {
@@ -347,21 +396,23 @@ export function StepSettingsPanel({
               <option>Vrijdag</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Tijdstip</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Tijdstip</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.tijdstip}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "beschikbaarheid", { ...s, tijdstip: e.target.value })
               }
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Sturen naar</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Sturen naar</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.sturenNaar}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "beschikbaarheid", {
@@ -380,10 +431,11 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_CHECK_IN }) as CheckInSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Frequentie</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Frequentie</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.frequentie}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "check_in", {
@@ -397,10 +449,11 @@ export function StepSettingsPanel({
               <option>Maandelijks</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Dag</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Dag</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.dag}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "check_in", {
@@ -414,10 +467,11 @@ export function StepSettingsPanel({
               <option>Vrijdag</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Bellen</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Bellen</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.bellen}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "check_in", {
@@ -436,10 +490,11 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_UREN }) as UrenSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Dag</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Dag</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.dag}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "uren", {
@@ -452,21 +507,23 @@ export function StepSettingsPanel({
               <option>Vrijdag</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Tijdstip</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Tijdstip</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.tijdstip}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "uren", { ...s, tijdstip: e.target.value })
               }
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Via</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Via</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.via}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "uren", {
@@ -486,10 +543,11 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_EVALUATIE }) as EvaluatieSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Na einde plaatsing</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Na einde plaatsing</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.naEindePlaatsing}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "evaluatie", {
@@ -503,10 +561,11 @@ export function StepSettingsPanel({
               <option>Na 3 dagen</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Bellen</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Bellen</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.bellen}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "evaluatie", {
@@ -525,22 +584,24 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_DAGRAPPORT }) as DagrapportSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Tijdstip</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Tijdstip</label>
             <input
               type="time"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.tijdstip}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "dagrapport", { ...s, tijdstip: e.target.value })
               }
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Sturen naar</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Sturen naar</label>
             <input
               type="email"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               placeholder="recruiter@bureau.nl"
               value={s.sturenNaarEmail}
               onChange={(e) =>
@@ -551,10 +612,11 @@ export function StepSettingsPanel({
               }
             />
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Alleen bij</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Alleen bij</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.alleenBij}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "dagrapport", {
@@ -573,10 +635,11 @@ export function StepSettingsPanel({
       const s = merged({ ...DEFAULT_ZIEKTE }) as ZiekteSettings;
       body = (
         <div>
-          <div className="flow-field">
-            <label className="flow-field-label">Reactietijd</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Reactietijd</label>
             <select
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               value={s.reactietijd}
               onChange={(e) =>
                 onChangeOptionalFull(oid, "ziekte", {
@@ -590,11 +653,12 @@ export function StepSettingsPanel({
               <option>Na 1 uur</option>
             </select>
           </div>
-          <div className="flow-field">
-            <label className="flow-field-label">Alert sturen naar</label>
+          <div style={fieldWrapStyle}>
+            <label style={fieldLabelStyle}>Alert sturen naar</label>
             <input
               type="email"
-              className="flow-input"
+              style={inputStyle}
+              {...creamIH}
               placeholder="recruiter@bureau.nl"
               value={s.alertEmail}
               onChange={(e) =>
@@ -612,32 +676,32 @@ export function StepSettingsPanel({
       className="relative flex h-full min-h-0 w-full flex-col self-start"
       style={{
         padding: 18,
-        background: "var(--color-background-primary)",
-        borderRadius: "var(--border-radius-lg)",
-        border: "0.5px solid var(--color-border-tertiary)",
+        background: "var(--cream-bg)",
+        borderRadius: 10,
+        border: "1px solid var(--cream-border)",
       }}
     >
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-3 top-3 cursor-pointer transition-colors"
-        style={{ color: "var(--color-text-secondary)" }}
+        className="absolute cursor-pointer border-none bg-transparent p-0"
+        style={{ top: 14, right: 14, color: "var(--cream-faint)", fontSize: 16 }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.color = "var(--color-text-primary)";
+          e.currentTarget.style.color = "var(--cream-text)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.color = "var(--color-text-secondary)";
+          e.currentTarget.style.color = "var(--cream-faint)";
         }}
         aria-label="Sluiten"
       >
         <X style={{ width: 16, height: 16 }} strokeWidth={2} />
       </button>
-      <div className="pr-8">
+      <div className="pr-9">
         <div className="mb-1 flex items-center gap-2">
           <span className="text-[20px] leading-none" aria-hidden>
             {title.icon}
           </span>
-          <h2 className="leading-tight" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-text-primary)" }}>
+          <h2 className="leading-tight" style={{ fontSize: 14, fontWeight: 500, color: "var(--cream-text)" }}>
             {title.name}
           </h2>
         </div>
@@ -645,30 +709,30 @@ export function StepSettingsPanel({
           className="leading-snug"
           style={{
             fontSize: 12,
-            color: "var(--color-text-secondary)",
-            marginBottom: 16,
-            paddingBottom: 16,
-            borderBottom: "0.5px solid var(--color-border-tertiary)",
+            color: "var(--cream-muted)",
+            marginBottom: 14,
+            paddingBottom: 14,
+            borderBottom: "1px solid var(--cream-border)",
           }}
         >
           Pas de instellingen aan voor deze stap
         </p>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
-      <div style={{ marginTop: 4 }}>
+      <div style={{ marginTop: 6 }}>
         <button
           type="button"
           onClick={() => {
             setSavedTick(true);
             window.setTimeout(() => setSavedTick(false), 1500);
           }}
-          className="w-full cursor-pointer font-medium transition-opacity"
+          className="w-full cursor-pointer font-medium transition-opacity duration-150 hover:opacity-[0.85]"
           style={{
-            padding: 8,
-            borderRadius: "var(--border-radius-md)",
-            background: "var(--color-background-info)",
-            color: "var(--color-text-info)",
-            border: "0.5px solid var(--color-border-info)",
+            padding: 9,
+            borderRadius: 7,
+            background: "var(--cream-text)",
+            color: "var(--cream-bg)",
+            border: "none",
             fontSize: 13,
           }}
         >
