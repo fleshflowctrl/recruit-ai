@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/Header";
-import { PageWrapper } from "@/components/layout/PageWrapper";
 import { BerichtenGrouped } from "@/components/whatsapp/BerichtenGrouped";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
@@ -33,13 +31,41 @@ export default async function BerichtenPage({
     })) ?? [];
 
   return (
-    <PageWrapper>
-      <Header title="Berichten" subtitle="WhatsApp-inbox" />
+    <div
+      style={{
+        height: "calc(100vh - 0px)",
+        display: "flex",
+        flexDirection: "column",
+        background: "#FAFAF8",
+      }}
+      className="min-h-0 flex-1"
+    >
+      <div
+        style={{
+          padding: "20px 24px 16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexShrink: 0,
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "22px",
+            fontWeight: 500,
+            letterSpacing: "-0.3px",
+            color: "#1A1A18",
+          }}
+        >
+          Berichten
+        </h1>
+      </div>
+
       <BerichtenGrouped
         initial={flat}
         bureauId={ctx.bureau.id}
         initialKandidaatId={sp.kandidaat ?? null}
       />
-    </PageWrapper>
+    </div>
   );
 }
