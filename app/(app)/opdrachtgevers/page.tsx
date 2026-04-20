@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Header } from "@/components/layout/Header";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { DataTable, Th, Td } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { OpdrachtgeverSearch } from "@/components/opdrachtgevers/OpdrachtgeverSearch";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionContext } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -17,62 +16,54 @@ export default async function OpdrachtgeversPage() {
     .eq("bureau_id", ctx.bureau.id)
     .order("naam");
 
+  const { data: vacatureCounts } = await supabase
+    .from("vacatures")
+    .select("opdrachtgever_id")
+    .eq("bureau_id", ctx.bureau.id)
+    .eq("status", "open");
+
+  const countByOpdrachtgever: Record<string, number> = {};
+  for (const v of vacatureCounts ?? []) {
+    if (!v.opdrachtgever_id) continue;
+    countByOpdrachtgever[v.opdrachtgever_id] =
+      (countByOpdrachtgever[v.opdrachtgever_id] ?? 0) + 1;
+  }
+
   return (
-    <PageWrapper>
-      <Header
-        title="Opdrachtgevers"
-        actions={
-          <Link
-            href="/opdrachtgevers/nieuw"
-            className="btn-cream-primary"
-          >
-            + Toevoegen
-          </Link>
-        }
-      />
+    <PageWrapper className="space-y-5 p-4 md:p-6 lg:p-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[24px] font-medium tracking-[-0.3px] text-[#1A1A18]">
+            Opdrachtgevers
+            <em className="font-[inherit] not-italic text-[#B0AFA9]">
+              {" "}
+              · {rows?.length ?? 0}
+            </em>
+          </h1>
+          <p className="mt-[3px] text-[13px] text-[#8A8A85]">
+            Bedrijven waarvoor u vacatures plaatst
+          </p>
+        </div>
+        <Link href="/opdrachtgevers/nieuw" className="btn-primary shrink-0">
+          + Toevoegen
+        </Link>
+      </div>
+
       {!rows?.length ? (
         <EmptyState
-          title="Nog geen opdrachtgevers. Voeg uw eerste opdrachtgever toe."
-          description="Opdrachtgevers zijn de werkgevers waarvoor u vacatures plaatst."
+          title="Nog geen opdrachtgevers."
+          description="Voeg uw eerste opdrachtgever toe."
           action={
-            <Link
-              href="/opdrachtgevers/nieuw"
-              className="btn-cream-primary"
-            >
-              Opdrachtgever toevoegen
+            <Link href="/opdrachtgevers/nieuw" className="btn-primary">
+              Toevoegen
             </Link>
           }
         />
       ) : (
-        <div className="overflow-x-auto">
-        <DataTable>
-          <thead>
-            <tr>
-              <Th>Naam</Th>
-              <Th>Sector</Th>
-              <Th>Contact</Th>
-              <Th>Telefoon</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((o) => (
-              <tr key={o.id}>
-                <Td>
-                  <Link
-                    href={`/opdrachtgevers/${o.id}`}
-                    className="font-medium text-primary hover:underline"
-                  >
-                    {o.naam}
-                  </Link>
-                </Td>
-                <Td>{o.sector ?? "—"}</Td>
-                <Td>{o.contactpersoon ?? "—"}</Td>
-                <Td>{o.telefoon ?? "—"}</Td>
-              </tr>
-            ))}
-          </tbody>
-        </DataTable>
-        </div>
+        <OpdrachtgeverSearch
+          opdrachtgevers={rows}
+          vacatureCounts={countByOpdrachtgever}
+        />
       )}
     </PageWrapper>
   );
