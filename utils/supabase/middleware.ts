@@ -21,10 +21,7 @@ export function createMiddlewareSupabase(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
+        setAll(cookiesToSet, cacheHeaders) {
           response = NextResponse.next({
             request: {
               headers: request.headers,
@@ -32,6 +29,9 @@ export function createMiddlewareSupabase(request: NextRequest) {
           });
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
+          );
+          Object.entries(cacheHeaders ?? {}).forEach(([key, value]) =>
+            response.headers.set(key, value),
           );
         },
       },
