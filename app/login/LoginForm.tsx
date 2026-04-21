@@ -14,10 +14,26 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const supabaseConfigured =
+    typeof process.env.NEXT_PUBLIC_SUPABASE_URL === "string" &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL.length > 0 &&
+    ((typeof process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY === "string" &&
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.length > 0) ||
+      (typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY === "string" &&
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length > 0));
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (!supabaseConfigured) {
+      setError(
+        "Supabase is niet geconfigureerd in deze omgeving. Stel NEXT_PUBLIC_SUPABASE_URL en NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (of NEXT_PUBLIC_SUPABASE_ANON_KEY) in op Vercel en deploy opnieuw.",
+      );
+      setLoading(false);
+      return;
+    }
 
     try {
       const supabase = createClient();

@@ -45,7 +45,18 @@ export async function middleware(request: NextRequest) {
         { status: 503 },
       );
     }
-    return NextResponse.next();
+    // Voorkom redirect-loop richting /login en laat de auth-flow door.
+    if (
+      pathname === "/login" ||
+      pathname.startsWith("/login/") ||
+      pathname.startsWith("/auth")
+    ) {
+      return NextResponse.next();
+    }
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    return NextResponse.redirect(url);
   }
 
   const { supabase, response } = ctx;
