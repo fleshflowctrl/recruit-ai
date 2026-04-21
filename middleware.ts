@@ -45,9 +45,7 @@ export async function middleware(request: NextRequest) {
         { status: 503 },
       );
     }
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return NextResponse.next();
   }
 
   const { supabase, response } = ctx;
